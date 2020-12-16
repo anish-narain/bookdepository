@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<title>Search Results - Flask User Database</title>
+    <div class="container">
+    <h1 align="center">User Database</h1>
+      {% for rows in outputData %}
+        <ul id="rows.username" align="center">
+          <li>
+              <span class="field-name">User:</span>
+              <span class="field-value">{{ rows.username }}</span>
+          </li>
+          <li>
+              <span class="field-name">Email:</span>
+              <span class="field-value">{{ rows.email }}</span>
+          </li>
+        </ul>
+      {% endfor %}
+    </div>
+{% endblock %}

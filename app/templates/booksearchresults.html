@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<title>Book Search Results</title>
+    <div class="container">
+    <h1 align="center">Book Search Results</h1>
+        <li>
+              <span class="field-name">Title:</span>
+              <span class="field-value">{{ outputData.volumeInfo.title }}</span>
+        </li>
+        <li>
+              <span class="field-name">Authors:</span>
+              <span class="field-value">{{ outputData.volumeInfo.authors }}</span>
+        </li>
+        <li>
+              <span class="field-name">ISBN:</span>
+              <span class="field-value">{{ outputData.volumeInfo.industryIdentifiers.0.identifier }}</span>
+        </li>
+    </div>
+{% endblock %}
