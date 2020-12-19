@@ -37,23 +37,41 @@ class ResetPasswordForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
-class SearchBookForm(FlaskForm):
+class SearchISBNForm(FlaskForm):
     isbn = StringField('ISBN')
-    submit = SubmitField('Search Book')
+    submit = SubmitField('Get ISBN Details')
 
 class DonateBookForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     isbn = StringField('ISBN')
     author = StringField('Author')
-    grade = SelectField('Year', choices=[('Nine', 'Nine'), ('Eight', 'Eight')])
-    subject = SelectField('Subject', choices=[('English', 'English'), ('History', 'History')])
-    examboard = SelectField('Board', choices=[('OCR', 'OCR'), ('AQA', 'AQA')])
+    grade = SelectField('Year', choices=[('', ''), ('Eight', 'Eight'), ('Nine', 'Nine'),
+    ('Ten', 'Ten'), ('Eleven', 'Eleven'), ('Twelve', 'Twelve'),
+    ('Thirteen', 'Thirteen'), ('Primary', 'Primary'), ('College', 'College')])
+    subject = SelectField('Subject', choices=[('', ''), 
+    ('History', 'History'), ('Maths', 'Maths'), ('Physics', 'Physics'), 
+    ('English', 'English'), ('Biology', 'Biology'), ('Chemistry', 'Chemistry')])
+    examboard = SelectField('Board', choices=[('', ''),('OCR', 'OCR'), ('AQA', 'AQA')])
     publisher = StringField('Publisher')
     submit = SubmitField('Donate Book')
 
 class ManageBookForm(FlaskForm):
     transactionid = StringField('TransactionId')
     submit = SubmitField('Get Details')
+
+class SearchBookForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    isbn = StringField('ISBN')
+    author = StringField('Author')
+    grade = SelectField('Year', choices=[('', ''), ('Eight', 'Eight'), ('Nine', 'Nine'),
+    ('Ten', 'Ten'), ('Eleven', 'Eleven'), ('Twelve', 'Twelve'),
+    ('Thirteen', 'Thirteen'), ('Primary', 'Primary'), ('College', 'College')])
+    subject = SelectField('Subject', choices=[('', ''), 
+    ('History', 'History'), ('Maths', 'Maths'), ('Physics', 'Physics'), 
+    ('English', 'English'), ('Biology', 'Biology'), ('Chemistry', 'Chemistry')])
+    examboard = SelectField('Board', choices=[('', ''),('OCR', 'OCR'), ('AQA', 'AQA')])
+    publisher = StringField('Publisher')
+    submit = SubmitField('Search Book')
 
 
 

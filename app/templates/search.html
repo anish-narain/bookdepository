@@ -1,8 +1,65 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
-    {% endfor %}
+{% block app_content %}
+<title>Donate</title>
+    <div class="container">
+    <br>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p><strong>We recommend that you search the book by only it's ISBN.</strong></p>
+        <p align="left">
+            {{ form.isbn.label }}<br>
+            {{ form.isbn(size=15) }}<br>
+            {% for error in form.isbn.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <br>
+        <p><i>Use the other fields only if you dont know the ISBN or for more generic search</i></p>
+        <p align="left">
+            {{ form.title.label }}<br>
+            {{ form.title(size=60) }}<br>
+            {% for error in form.title.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p align="left">
+            {{ form.author.label }}<br>
+            {{ form.author(size=32) }}<br>
+            {% for error in form.author.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.grade.label }}<br>
+            {{ form.grade }}<br>
+            {% for error in form.grade.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.subject.label }}<br>
+            {{ form.subject }}<br>
+            {% for error in form.subject.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.examboard.label }}<br>
+            {{ form.examboard }}<br>
+            {% for error in form.author.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.publisher.label }}<br>
+            {{ form.publisher(size=32) }}<br>
+            {% for error in form.publisher.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="center">{{ form.submit() }}</p>
+    </form>
+    </div>
 {% endblock %}

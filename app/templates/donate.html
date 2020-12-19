@@ -1,19 +1,24 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
+{% block app_content %}
+<title>Donate</title>
+    <div class="container">
+    <br>
+    <br>
+    <p align="center"><strong>Hi {{ current_user.username }}! Please check the data 
+    returned from service</strong></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p align="center">
             {{ form.title.label }}<br>
-            {{ form.title(size=32) }}<br>
+            {{ form.title(size=60) }}<br>
             {% for error in form.title.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p align="center">
             {{ form.isbn.label }}<br>
-            {{ form.isbn(size=10) }}<br>
+            {{ form.isbn(size=15) }}<br>
             {% for error in form.isbn.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
@@ -25,6 +30,10 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
+        <br>
+        <br>
+        <p align="center"><strong>Please provide the remaining data</strong></p>
+
         <p align="center">
             {{ form.grade.label }}<br>
             {{ form.grade }}<br>
@@ -55,4 +64,5 @@
         </p>
         <p align="center">{{ form.submit() }}</p>
     </form>
+    </div>
 {% endblock %}

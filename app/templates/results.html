@@ -3,18 +3,58 @@
 {% block app_content %}
 <title>Search Results - Flask User Database</title>
     <div class="container">
-    <h1 align="center">User Database</h1>
-      {% for rows in outputData %}
-        <ul id="rows.username" align="center">
+    <h1 align="center">User Profile</h1>
+
+    <p><strong>Here are your recent transactions</strong></p>
+      <br>
+      {% for rows in transactions %}
+        <ul id="rows.transaction_id" align="center">
           <li>
-              <span class="field-name">User:</span>
-              <span class="field-value">{{ rows.username }}</span>
+              <span class="field-name">Transaction Id:</span>
+              <span class="field-value">{{ rows.transaction_id }}</span>
           </li>
           <li>
-              <span class="field-name">Email:</span>
-              <span class="field-value">{{ rows.email }}</span>
+              <span class="field-name">Book:</span>
+              <span class="field-value">{{ rows.book_id }}</span>
+          </li>
+          <li>
+              <span class="field-name">Transaction Type:</span>
+              <span class="field-value">{{ rows.transaction_type }}</span>
+          </li>
+          <li>
+              <span class="field-name">Date:</span>
+              <span class="field-value">{{ rows.transaction_date}}</span>
           </li>
         </ul>
       {% endfor %}
+      <br>
+      <p><strong>Your award points are from:</strong></p>
+      {% for rows in awardPoints %}
+        <ul id="rows.award_id" align="center">
+          <li>
+              <span class="field-name">Transaction Id:</span>
+              <span class="field-value">{{ rows.transaction_id }}</span>
+          </li>
+          <li>
+              <span class="field-name">Points:</span>
+              <span class="field-value">{{ rows.points }}</span>
+          </li>
+        </ul>
+      {% endfor %}
+      <br>
+      <br>
+      <p><strong>Your profile details are:</strong></p>
+ 
+        <ul id="outputData.username" align="center">
+          <li>
+              <span class="field-name">User:</span>
+              <span class="field-value">{{ outputData.username }}</span>
+          </li>
+          <li>
+              <span class="field-name">Email:</span>
+              <span class="field-value">{{ outputData.email }}</span>
+          </li>
+        </ul>
+
     </div>
 {% endblock %}

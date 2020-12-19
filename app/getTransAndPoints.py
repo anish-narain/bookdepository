@@ -3,7 +3,19 @@ import requests
 from flask_babel import _
 from app import app
 
-def getISBNInfo(isbn_input):
+def getTransAndPoints(account_id):
+
+    q = Session.query(
+         Books, Transactions, Awards,
+    ).filter(
+        Awards.account_id == account_id,
+    ).filter(
+        Awards.transaction_id == Transactions.transaction_id,
+    ).filter(
+        Transactions.book_id == Book.book_id
+    ).all()
+
+
     reqstring = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'+ isbn_input
     r = requests.get(reqstring)
     if r.status_code != 200:
