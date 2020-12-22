@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<title>Donate</title>
+    <div class="container">
+    <br>
+    <p align="left"><strong>Hi {{ current_user.username }}, Please select from the below search result</strong></p>
+    <form action="" method="post" novalidate>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {% for book in outputData %}
+                    <tr>
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <br>
+        <p align="center">{{ form.submit() }}</p>
+    </form>
+    </div>
+{% endblock %}

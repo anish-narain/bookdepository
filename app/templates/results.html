@@ -15,7 +15,7 @@
           </li>
           <li>
               <span class="field-name">Book:</span>
-              <span class="field-value">{{ rows.book_id }}</span>
+              <span class="field-value">{{ rows.book_item_id }}</span>
           </li>
           <li>
               <span class="field-name">Transaction Type:</span>
@@ -25,19 +25,9 @@
               <span class="field-name">Date:</span>
               <span class="field-value">{{ rows.transaction_date}}</span>
           </li>
-        </ul>
-      {% endfor %}
-      <br>
-      <p><strong>Your award points are from:</strong></p>
-      {% for rows in awardPoints %}
-        <ul id="rows.award_id" align="center">
-          <li>
-              <span class="field-name">Transaction Id:</span>
-              <span class="field-value">{{ rows.transaction_id }}</span>
-          </li>
-          <li>
+                    <li>
               <span class="field-name">Points:</span>
-              <span class="field-value">{{ rows.points }}</span>
+              <span class="field-value">{{ rows.award_points}}</span>
           </li>
         </ul>
       {% endfor %}

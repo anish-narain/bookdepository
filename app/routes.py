@@ -2,9 +2,9 @@
 
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm
+from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Books, Branch, BookItem, Transactions, AwardPoints
+from app.models import User, Books, Branch, BookItem, Transactions
 from werkzeug.urls import url_parse
 from app.email import send_password_reset_email
 from flask import jsonify
@@ -42,17 +42,15 @@ def logout():
 def results():
     outputData = []
     outputData = User.query.get(current_user.id)
-    awardPoints = []
-    awardPoints = AwardPoints.query.filter_by(account_id = current_user.id).all()
     transactions =[]
-    transactions = Transactions.query.filter_by(transaction_account = current_user.id).all()
+    transactions = outputData.transactions.filter_by(transaction_account = current_user.id).all()
 
     if not outputData:
         flash('No results found!')
         return redirect('/')
     else:
         # display results
-        return render_template('results.html', transactions=transactions, outputData=outputData, awardPoints=awardPoints)
+        return render_template('results.html', transactions=transactions, outputData=outputData)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -102,15 +100,28 @@ def reset_password(token):
 def search():
     form = SearchBookForm()
     if form.validate_on_submit():
-        outputData = []
-        outputData = getISBNInfo(request.form['isbn'])
-        if not outputData:
-            flash('No results found!')
-            return redirect('/')
-        else:
-        # use response to populate donation page
-            return redirect(url_for('donatedetails', indata = outputData))
+        isbn = form.isbn.data
+        return redirect(url_for('searchdetails', inputdata = isbn))   
     return render_template('search.html', title='SearchBook',form=form)
+
+@app.route('/searchdetails/<inputdata>', methods=['GET','POST'])
+@login_required
+def searchdetails(inputdata):
+    outputData = []
+    outputData = Books.query.filter_by(isbn = inputdata).all()
+    form = ReserveBookForm()
+    if not outputData:
+        flash('Sorry, we dont have this book')
+        return redirect('/search')
+    else:
+        # use response to populate reservation page
+        if form.validate_on_submit():
+            book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data)
+            db.session.add(book)
+            db.session.commit()
+            flash('Congratulations, you have reserved the book!')
+            return redirect(url_for('index'))
+    return render_template('reserve.html', outputData=outputData,form=form)
 
 @app.route('/donate', methods=['GET', 'POST'])
 @login_required

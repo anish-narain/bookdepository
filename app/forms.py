@@ -60,7 +60,7 @@ class ManageBookForm(FlaskForm):
     submit = SubmitField('Get Details')
 
 class SearchBookForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
+    title = StringField('Title')
     isbn = StringField('ISBN')
     author = StringField('Author')
     grade = SelectField('Year', choices=[('', ''), ('Eight', 'Eight'), ('Nine', 'Nine'),
@@ -72,6 +72,12 @@ class SearchBookForm(FlaskForm):
     examboard = SelectField('Board', choices=[('', ''),('OCR', 'OCR'), ('AQA', 'AQA')])
     publisher = StringField('Publisher')
     submit = SubmitField('Search Book')
+
+class ReserveBookForm(FlaskForm):
+    title = StringField('Title')
+    isbn = StringField('ISBN')
+    author = StringField('Author')
+    submit = SubmitField('Reserve Book')
 
 
 
