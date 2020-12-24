@@ -43,7 +43,8 @@ def results():
     outputData = []
     outputData = User.query.get(current_user.id)
     transactions =[]
-    transactions = outputData.transactions.filter_by(transaction_account = current_user.id).all()
+    # transactions = outputData.transactions.filter_by(transaction_account = current_user.id).all()
+    transactions = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Transactions.transaction_id, Books.title, Transactions.transaction_type, Transactions.transaction_date, Transactions.award_points).filter(Transactions.transaction_account == current_user.id)
 
     if not outputData:
         flash('No results found!')
@@ -101,17 +102,39 @@ def search():
     form = SearchBookForm()
     if form.validate_on_submit():
         isbn = form.isbn.data
-        return redirect(url_for('searchdetails', inputdata = isbn))   
+        title = form.title.data 
+        author = form.author.data 
+        retvalue = isbn + '::' + title + '::' + author
+        return redirect(url_for('searchdetails', inputdata = retvalue))   
     return render_template('search.html', title='SearchBook',form=form)
 
 @app.route('/searchdetails/<inputdata>', methods=['GET','POST'])
 @login_required
 def searchdetails(inputdata):
+    inputisbn = inputdata.split("::")[0]
+    inputtitle = inputdata.split("::")[1]
+    inputauthor = inputdata.split("::")[2]
+
     outputData = []
-    outputData = Books.query.filter_by(isbn = inputdata).all()
+    # outputData = Books.query.filter_by(isbn = isbn).all()
+    query = Books.query.join(BookItem, BookItem.book_id == Books.book_id).join(Branch, Branch.branch_id == BookItem.branch_id).add_columns(Books.isbn, Books.title, Books.author, BookItem.status, Branch.branch_name, Branch.city, BookItem.book_item_id)
+
+
+    if inputisbn:
+        search = "%{}%".format(inputisbn)
+        query = query.filter(Books.isbn.like(search))
+    if inputtitle:
+        search = "%{}%".format(inputtitle)
+        query = query.filter(Books.title.like(search))
+    if inputauthor:
+        search = "%{}%".format(inputauthor)    
+        query = query.filter(Books.author.like(search))
+
+    outputData = query.all()
+
     form = ReserveBookForm()
     if not outputData:
-        flash('Sorry, we dont have this book')
+        flash('Sorry, No books found for you search conditions. Please search again')
         return redirect('/search')
     else:
         # use response to populate reservation page

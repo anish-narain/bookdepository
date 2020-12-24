@@ -4,6 +4,7 @@
 <title>Search Results - Flask User Database</title>
     <div class="container">
     <h1 align="center">User Profile</h1>
+    
 
     <p><strong>Here are your recent transactions</strong></p>
       <br>
@@ -15,7 +16,7 @@
           </li>
           <li>
               <span class="field-name">Book:</span>
-              <span class="field-value">{{ rows.book_item_id }}</span>
+              <span class="field-value">{{ rows.title }}</span>
           </li>
           <li>
               <span class="field-name">Transaction Type:</span>
@@ -30,7 +31,9 @@
               <span class="field-value">{{ rows.award_points}}</span>
           </li>
         </ul>
-      {% endfor %}
+        {% else %}
+            <em>You have no recent transactions</em>
+        {% endfor %}
       <br>
       <br>
       <p><strong>Your profile details are:</strong></p>
