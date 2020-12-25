@@ -6,7 +6,7 @@ from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, Res
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Books, Branch, BookItem, Transactions
 from werkzeug.urls import url_parse
-from app.email import send_password_reset_email
+from app.email import send_password_reset_email, send_reservation_email, send_donation_email
 from flask import jsonify
 from app.getBookByISBN import getISBNInfo
 
@@ -103,8 +103,12 @@ def search():
     if form.validate_on_submit():
         isbn = form.isbn.data
         title = form.title.data 
-        author = form.author.data 
-        retvalue = isbn + '::' + title + '::' + author
+        author = form.author.data
+        grade = form.grade.data 
+        subject = form.subject.data 
+        examboard = form.examboard.data
+        publisher = form.publisher.data
+        retvalue = isbn + '::' + title + '::' + author + '::' + grade + '::' + subject + '::' + examboard + '::' + publisher
         return redirect(url_for('searchdetails', inputdata = retvalue))   
     return render_template('search.html', title='SearchBook',form=form)
 
@@ -114,6 +118,10 @@ def searchdetails(inputdata):
     inputisbn = inputdata.split("::")[0]
     inputtitle = inputdata.split("::")[1]
     inputauthor = inputdata.split("::")[2]
+    inputgrade = inputdata.split("::")[3]
+    inputsubject = inputdata.split("::")[4]
+    inputexamboard = inputdata.split("::")[5]
+    inputpublisher = inputdata.split("::")[6]
 
     outputData = []
     # outputData = Books.query.filter_by(isbn = isbn).all()
@@ -129,6 +137,18 @@ def searchdetails(inputdata):
     if inputauthor:
         search = "%{}%".format(inputauthor)    
         query = query.filter(Books.author.like(search))
+    if inputgrade:
+        search = "%{}%".format(inputgrade)
+        query = query.filter(Books.grade.like(search))
+    if inputsubject:
+        search = "%{}%".format(inputsubject)
+        query = query.filter(Books.subject.like(search))
+    if inputexamboard:
+        search = "%{}%".format(inputexamboard)    
+        query = query.filter(Books.examboard.like(search))
+    if inputpublisher:
+        search = "%{}%".format(inputpublisher)    
+        query = query.filter(Books.publisher.like(search))
 
     outputData = query.all()
 
@@ -136,14 +156,29 @@ def searchdetails(inputdata):
     if not outputData:
         flash('Sorry, No books found for you search conditions. Please search again')
         return redirect('/search')
-    else:
         # use response to populate reservation page
-        if form.validate_on_submit():
-            book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data)
-            db.session.add(book)
-            db.session.commit()
-            flash('Congratulations, you have reserved the book!')
-            return redirect(url_for('index'))
+    print('lets get the itemid:')
+    print(form.errors)
+
+    if form.is_submitted():
+        print('submitted')
+
+    if form.validate():
+        print ('valid')
+
+    print(form.errors)
+
+    if form.validate_on_submit():
+        selected_book_item_id = 1
+        print('itemid:' + str(selected_book_item_id))
+        bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
+        bookitem.status = 'RESERVED'
+
+        transaction = Transactions(book_item_id=selected_book_item_id, transaction_account=current_user.id, transaction_type = 'RESERVE', award_points = 0)
+        db.session.add(transaction)
+        db.session.commit()
+        flash('Congratulations, you have reserved the book! ' + str(transaction.transaction_id))
+        return redirect(url_for('index'))
     return render_template('reserve.html', outputData=outputData,form=form)
 
 @app.route('/donate', methods=['GET', 'POST'])

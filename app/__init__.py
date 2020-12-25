@@ -19,10 +19,6 @@ bootstrap = Bootstrap(app)
 
 from app import routes, models
 
-@app.before_request
-def before_request():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=20)
 
 
 

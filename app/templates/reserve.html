@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<title>Donate</title>
+<title>Reserve</title>
     <div class="container">
     <br>
-    <p align="left"><strong>Hi {{ current_user.username }}, Please select from the below search result</strong></p>
     <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p align="left"><strong>Hi {{ current_user.username }}, Please select from the below search result</strong></p>
             <table class="table">
                 <thead>
                     <tr>
@@ -20,15 +21,15 @@
                 </thead>
                 <tbody>
                     {% for book in outputData %}
-                    <tr>
+                    <tr id="{{book.book_item_id}}">
                         <td>{{ book.isbn }}</td>
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.status }}</td>
                         <td>{{ book.branch_name }}</td>
                         <td>{{ book.city }}</td>
-                        {% if book.status == "A" %}
-                        <td><input type="radio" name="options" id="{{book.book_item_id}}" value="{{book.book_item_id}}"> Select </input></td>
+                        {% if book.status == "AVAILABLE" %}
+                        <td><input type="radio" name="chosenoption" id="{{book.book_item_id}}" value="{{book.book_item_id}}"> Select </input></td>
                         {% else %}
                         <td>Book not available for reservation</td>
                         {% endif %}

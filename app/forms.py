@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 
@@ -74,9 +74,7 @@ class SearchBookForm(FlaskForm):
     submit = SubmitField('Search Book')
 
 class ReserveBookForm(FlaskForm):
-    title = StringField('Title')
-    isbn = StringField('ISBN')
-    author = StringField('Author')
+    chosenoption = RadioField('Options', choices=[('1', '1'), ('2', '2')], default=1, coerce=int)
     submit = SubmitField('Reserve Book')
 
 
