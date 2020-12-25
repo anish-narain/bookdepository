@@ -1,7 +1,20 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import User
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from app.models import User, Grades, Subjects, Boards, Branch
+
+def get_grades():
+    return Grades.query.all()
+
+def get_subjects():
+    return Subjects.query.all() 
+
+def get_boards():
+    return Boards.query.all() 
+
+def get_locations():
+    return Branch.query.all()
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -45,14 +58,11 @@ class DonateBookForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     isbn = StringField('ISBN')
     author = StringField('Author')
-    grade = SelectField('Year', choices=[('', ''), ('Eight', 'Eight'), ('Nine', 'Nine'),
-    ('Ten', 'Ten'), ('Eleven', 'Eleven'), ('Twelve', 'Twelve'),
-    ('Thirteen', 'Thirteen'), ('Primary', 'Primary'), ('College', 'College')])
-    subject = SelectField('Subject', choices=[('', ''), 
-    ('History', 'History'), ('Maths', 'Maths'), ('Physics', 'Physics'), 
-    ('English', 'English'), ('Biology', 'Biology'), ('Chemistry', 'Chemistry')])
-    examboard = SelectField('Board', choices=[('', ''),('OCR', 'OCR'), ('AQA', 'AQA')])
+    grade = QuerySelectField('Year', query_factory=get_grades, get_label='grade', allow_blank=True)
+    subject = QuerySelectField('Subject', query_factory=get_subjects, get_label='subject', allow_blank=True)
+    examboard = QuerySelectField('Board', query_factory=get_boards, get_label='board', allow_blank=True)
     publisher = StringField('Publisher')
+    location = QuerySelectField('Branch', query_factory=get_locations)
     submit = SubmitField('Donate Book')
 
 class ManageBookForm(FlaskForm):
@@ -63,13 +73,9 @@ class SearchBookForm(FlaskForm):
     title = StringField('Title')
     isbn = StringField('ISBN')
     author = StringField('Author')
-    grade = SelectField('Year', choices=[('', ''), ('Eight', 'Eight'), ('Nine', 'Nine'),
-    ('Ten', 'Ten'), ('Eleven', 'Eleven'), ('Twelve', 'Twelve'),
-    ('Thirteen', 'Thirteen'), ('Primary', 'Primary'), ('College', 'College')])
-    subject = SelectField('Subject', choices=[('', ''), 
-    ('History', 'History'), ('Maths', 'Maths'), ('Physics', 'Physics'), 
-    ('English', 'English'), ('Biology', 'Biology'), ('Chemistry', 'Chemistry')])
-    examboard = SelectField('Board', choices=[('', ''),('OCR', 'OCR'), ('AQA', 'AQA')])
+    grade = QuerySelectField('Year', query_factory=get_grades, get_label='grade', allow_blank=True)
+    subject = QuerySelectField('Subject', query_factory=get_subjects, get_label='subject', allow_blank=True)
+    examboard = QuerySelectField('Board', query_factory=get_boards, get_label='board', allow_blank=True)
     publisher = StringField('Publisher')
     submit = SubmitField('Search Book')
 

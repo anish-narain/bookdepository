@@ -71,7 +71,11 @@ class Branch(db.Model):
     items = db.relationship('BookItem', backref='item', lazy='dynamic')
 
     def __repr__(self):
-        return '<Branch {}>'.format(self.branch_name)
+        return '<Branch {}>'.format(self.branch_id)
+
+    def __str__(self):
+        return self.branch_name + ', ' + self.city
+    
 
 
 class Books(db.Model):
@@ -115,3 +119,15 @@ class NotificationTemplate(db.Model):
 
     def __repr__(self):
         return '<NotificationTemplate {}>'.format(self.template_name)
+
+class Grades(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    grade = db.Column(db.String(255))
+
+class Subjects(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(255))
+
+class Boards(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    board = db.Column(db.String(255))

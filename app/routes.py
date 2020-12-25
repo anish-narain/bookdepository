@@ -9,6 +9,7 @@ from werkzeug.urls import url_parse
 from app.email import send_password_reset_email, send_reservation_email, send_donation_email
 from flask import jsonify
 from app.getBookByISBN import getISBNInfo
+from sqlalchemy.exc import IntegrityError
 
 @app.route('/')
 @app.route('/index')
@@ -108,7 +109,18 @@ def search():
         subject = form.subject.data 
         examboard = form.examboard.data
         publisher = form.publisher.data
-        retvalue = isbn + '::' + title + '::' + author + '::' + grade + '::' + subject + '::' + examboard + '::' + publisher
+        
+        if str(grade) == 'None':
+            grade = ''
+
+        if str(subject) == 'None':
+            subject = ''
+
+        if str(examboard) == 'None':
+            examboard = ''
+
+        retvalue = isbn + '::' + title + '::' + author + '::' + str(grade) + '::' + str(subject) + '::' + str(examboard) + '::' + publisher
+
         return redirect(url_for('searchdetails', inputdata = retvalue))   
     return render_template('search.html', title='SearchBook',form=form)
 
@@ -177,6 +189,7 @@ def searchdetails(inputdata):
         transaction = Transactions(book_item_id=selected_book_item_id, transaction_account=current_user.id, transaction_type = 'RESERVE', award_points = 0)
         db.session.add(transaction)
         db.session.commit()
+        # TO-DO: send_reservation_email 
         flash('Congratulations, you have reserved the book! ' + str(transaction.transaction_id))
         return redirect(url_for('index'))
     return render_template('reserve.html', outputData=outputData,form=form)
@@ -200,15 +213,45 @@ def donate():
 @login_required
 def donatedetails():
     form = DonateBookForm()
+    # use response to populate donation page
     inputdata = request.args.get("indata")
     form.title.data = inputdata.split("::")[0]
     form.author.data = inputdata.split("::")[1]
     form.isbn.data = inputdata.split("::")[2]
+
+    # save the actual provided values
+    grade = form.grade.data
+    subject = form.subject.data
+    examboard = form.examboard.data
+
+    if str(grade) == 'None':
+        grade = ''
+
+    if str(subject) == 'None':
+        subject = ''
+
+    if str(examboard) == 'None':
+        examboard = ''
+
     if form.validate_on_submit():
-        book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data
-        ,grade=form.grade.data, subject=form.subject.data, publisher=form.publisher.data, examboard=form.examboard.data)
-        db.session.add(book)
+        outputData = Books.query.filter_by(isbn=form.isbn.data).all()
+        print('check outputdata')
+        if not outputData:
+            print('not outputdata')
+            book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data, grade=grade, subject=subject, publisher=form.publisher.data, examboard=examboard)
+            db.session.add(book)
+            db.session.commit()
+            bi_book_id = book.book_id
+        else:
+            # TO-DO: remove hardcoding
+            bi_book_id = outputData[0].book_id
+        
+        # TO-DO: remove hardcoding
+        print('location' + str(form.data['location']))
+        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=1 )
+        db.session.add(book_item)
         db.session.commit()
+        # TO-DO: send_donation_email 
         flash('Congratulations, you have donated the book!')
         return redirect(url_for('index'))
     return render_template('donate.html', title='Donate',form=form)

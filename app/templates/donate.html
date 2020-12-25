@@ -3,7 +3,6 @@
 {% block app_content %}
 <title>Donate</title>
     <div class="container">
-    <br>
     <p align="left"><strong>Hi {{ current_user.username }}, Please check the data returned by Google</strong></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
@@ -28,7 +27,6 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <br>
         <p align="left"><strong>Please provide the remaining information</strong></p>
 
         <p align="left">
@@ -56,6 +54,13 @@
             {{ form.publisher.label }}<br>
             {{ form.publisher(size=32) }}<br>
             {% for error in form.publisher.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.location.label }}<br>
+            {{ form.location }}<br>
+            {% for error in form.location.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
