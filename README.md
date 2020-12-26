@@ -57,7 +57,7 @@ H. Populate the initial dataset
 I. Quick sanity check before we start running the application
 
     a) Your folder structure now should look something like
-    ```
+
     (venv) ~/Anish/nea/bookdepository $ 
             LICENSE
             README.md
@@ -82,7 +82,6 @@ I. Quick sanity check before we start running the application
             setenv.sh
             venv
             (venv) ~/Anish/nea/bookdepository $ 
-    ```
 
 J. Start the application
 ```
@@ -98,6 +97,7 @@ A. General Improvements
     a) Session timeout is not there.
     b) Documentation
     c) Remove prints, debug settings
+    d) Find correct syntax to insert date values
 
 B. Index Page
 
@@ -105,7 +105,7 @@ B. Index Page
 
 C. User Profile
 
-    <del>a) Show only last 3 transactions</del>
+    a) Show only last 3 transactions ** Done **
     b) Edit profile?
 
 D. Search for Reservation
@@ -144,7 +144,7 @@ H. Manage
 
 4. How to enable SQL logging?
 
-5. How to add branches or any other master data?
+5. How to add more master data?
 
 
 **References**
