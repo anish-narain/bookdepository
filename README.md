@@ -20,41 +20,46 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 B. Copy the code from here to local machine and ensure that you change directory to bookrepository. 
 
-C. Create python virtual environment and then activate it
+C. Create python virtual environment
  ```   
     $ python3 -m venv venv
+```
+
+D. Activate the virtual environment
+ ```   
     $ source venv/bin/activate
     (venv) $
 ```
 Now you can notice the venv on your command prompt
 
-D. Install flask
+E. Install flask
 ```
     (venv) $ pip install flask
 ```
 
-E. Install all flask dependencies
+F. Install all flask dependencies
 ```
      (venv) $ pip install -r requirements.txt
 ```
 
-F. Set up the environment variables after editing the file with right values
+G. Set up the environment variables after editing the file with right values
 ```
     (venv) $ . ./.setenv.sh
 ```
+Everytime you close the terminal window and start afresh, you will have to run steps D and G.
 
-G. Set up the database by running these 3 commands
+H. Set up the database by running these 3 commands
 ```
     (venv) $ flask db init
     (venv) $ flask db migrate
     (venv) $ flask db upgrade
 ```
 
-H. Populate the initial dataset
+I. Populate the initial dataset
 ```
     (venv) $ cat metadata.sql | sqlite3 bookrepo.db
 ```
-I. Quick sanity check before we start running the application
+J. Quick sanity check before we start running the application
 
     a) Your folder structure now should look something like
 
@@ -83,12 +88,12 @@ I. Quick sanity check before we start running the application
             venv
             (venv) ~/Anish/nea/bookdepository $ 
 
-J. Start the application
+K. Start the application
 ```
     (venv) $ flask run
 ```
 
-K. Access the application on local [browser](http://127.0.0.1:5000)
+L. Access the application on local [browser](http://127.0.0.1:5000)
 
 **To do**
 
@@ -131,7 +136,7 @@ G. Donate
 H. Manage
 
     a) Accept Book, send acceptance thanks email
-    b) Give Book, send confirmation email
+    b) Issue Book, send confirmation email
     c) Make manage availabe only to admin users
 
 **Cheat Sheet**
