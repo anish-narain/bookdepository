@@ -8,6 +8,7 @@ from app.models import User, Books, Branch, BookItem, Transactions
 from werkzeug.urls import url_parse
 from app.email import send_password_reset_email, send_reservation_email, send_donation_email
 from app.getBookByISBN import getISBNInfo
+from sqlalchemy import func
 
 
 # Default Home Page. It shows all the branch information.
@@ -52,12 +53,14 @@ def results():
     # Table joins are requires to get the details and replace the ids
     transactions = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Transactions.transaction_id, Books.title, Transactions.transaction_type, Transactions.transaction_date, Transactions.award_points).filter(Transactions.transaction_account == current_user.id).order_by(Transactions.transaction_date.desc()).limit(3)
 
+    sumpoints = Transactions.query.with_entities(func.sum(Transactions.award_points).label('total')).filter(Transactions.transaction_account == current_user.id).first().total
+
     if not outputData:
         flash('No results found!')
         return redirect('/')
     else:
         # display results
-        return render_template('results.html', transactions=transactions, outputData=outputData)
+        return render_template('results.html', transactions=transactions, outputData=outputData, totalpoints = sumpoints)
 
 # User Registration. Shown to user for registration.
 @app.route('/register', methods=['GET', 'POST'])

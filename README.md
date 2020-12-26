@@ -61,7 +61,7 @@ I. Populate the initial dataset
 ```
 J. Quick sanity check before we start running the application
 
-    a) Your folder structure now should look something like
+    Your folder structure now should look something like
 
     (venv) ~/Anish/nea/bookdepository $ 
             LICENSE
@@ -111,7 +111,7 @@ B. Index Page
 C. User Profile
 
     a) Show only last 3 transactions ** Done **
-    b) Edit profile?
+    b) Add total award points ** Done **
 
 D. Search for Reservation
 
@@ -176,11 +176,11 @@ H. Manage
 
 **References**
 
-0. Dummies guide for [Flask] (https://codeburst.io/flask-for-dummies-a-beginners-guide-to-flask-part-uno-53aec6afc5b1)
+0. Dummies guide for [Flask](https://codeburst.io/flask-for-dummies-a-beginners-guide-to-flask-part-uno-53aec6afc5b1)
 
 1. The work is inspired by [Miguel's blog](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
 
 2. Used Stackoverflow extensively
 
-3. SQLite [tutorial]https://www.sqlitetutorial.net/
+3. SQLite [tutorial](https://www.sqlitetutorial.net/)
 
