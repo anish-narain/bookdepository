@@ -18,7 +18,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> 
 ```
 
-B. Copy the code from here to local machine
+B. Copy the code from here to local machine and ensure that you change directory to bookrepository.
 
 C. Create python virtual environment and then activate it
  ```   
@@ -56,8 +56,8 @@ H. Populate the initial dataset
 ```
 
 
-To do
------
+**To do**
+
 A. Index Page
 
     a) Nearest centre?
@@ -65,22 +65,56 @@ A. Index Page
 B. General Improvements
 
     a) Session timeout is not there.
+    b) Documentation
+    c) Remove prints, debug settings
 
 C. User Profile
 
-    a) Show only last 3 transactions -- done
+    ~~a) Show only last 3 transactions~~S
     b) Edit profile?
 
 D. Search for Reservation
 
+    a) Validations?
+
 E. Reserve
+
+    a) Currently the option list is hardcoded. Generalize it
+    b) Send reservation email
+    c) Future dated reservations
+    d) Send email once reserved book is available
 
 F. Search for Donation
 
+    a) Validation for ISBN
+    b) Handle when service is down or no information is available
+
 G. Donate
+
+    a) Send donation email
 
 H. Manage
 
-References:
+    a) Accept Book, send acceptance thanks email
+    b) Give Book, send confirmation email
+    c) Make manage availabe only to admin users
 
-The work is inspired by https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
+**Cheat Sheet**
+
+1. How to drop the entire database and start afresh?
+
+2. How to view actual table schema?
+
+3. How to view table data?
+
+4. How to enable SQL logging?
+
+5. How to add branches or any other master data?
+
+
+**References**
+
+1. The work is inspired by https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
+
+2. Stackoverflow
+
