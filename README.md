@@ -4,7 +4,7 @@ Welcome to my NEA project: Book Depository
 The design document is available here [link](https://www.google.com)
 
 
-**How to setup (Mac)**
+**How to setup on local machine (Mac)**
 
 A. Pre-requisites
 
@@ -55,6 +55,12 @@ H. Populate the initial dataset
     (venv) $ cat metadata.sql | sqlite3 bookrepo.db
 ```
 
+I. Start the application
+```
+    (venv) $ flask run
+```
+
+J. Access the application on local [browser](http://127.0.0.1:5000)
 
 **To do**
 
