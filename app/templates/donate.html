@@ -30,21 +30,21 @@
         <p align="left"><strong>Please provide the remaining information</strong></p>
 
         <p align="left">
-            {{ form.grade.label }}<br>
-            {{ form.grade }}<br>
+            {{ form.grade.label }}
+            {{ form.grade }}
             {% for error in form.grade.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p align="left">
-            {{ form.subject.label }}<br>
-            {{ form.subject }}<br>
+            {{ form.subject.label }}
+            {{ form.subject }}
             {% for error in form.subject.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p align="left">
-            {{ form.examboard.label }}<br>
+            {{ form.examboard.label }}
             {{ form.examboard }}<br>
             {% for error in form.author.errors %}
             <span style="color: red;">[{{ error }}]</span>
@@ -61,6 +61,13 @@
             {{ form.location.label }}<br>
             {{ form.location }}<br>
             {% for error in form.location.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.planned_date.label }}<br>
+            {{ form.planned_date(class='datepicker') }}<br>
+            {% for error in form.planned_date.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

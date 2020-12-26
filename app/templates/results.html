@@ -3,7 +3,7 @@
 {% block app_content %}
 <title>Search Results - Flask User Database</title>
     <div class="container">
-    <h1 align="center">User Profile</h1>
+    <h1 align="center">Your Profile</h1>
     
 
     <p><strong>Here are your recent transactions</strong></p>
@@ -24,7 +24,7 @@
           </li>
           <li>
               <span class="field-name">Date:</span>
-              <span class="field-value">{{ rows.transaction_date}}</span>
+              <span class="field-value">{{ rows.transaction_date.strftime('%d-%m-%Y') }}</span>
           </li>
                     <li>
               <span class="field-name">Points:</span>
@@ -35,16 +35,15 @@
             <em>You have no recent transactions</em>
         {% endfor %}
       <br>
-      <br>
       <p><strong>Your profile details are:</strong></p>
  
         <ul id="outputData.username" align="center">
           <li>
-              <span class="field-name">User:</span>
+              <span class="field-name">Name:</span>
               <span class="field-value">{{ outputData.username }}</span>
           </li>
           <li>
-              <span class="field-name">Email:</span>
+              <span class="field-name">email id:</span>
               <span class="field-value">{{ outputData.email }}</span>
           </li>
         </ul>

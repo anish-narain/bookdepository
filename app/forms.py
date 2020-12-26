@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Selec
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app.models import User, Grades, Subjects, Boards, Branch
+from wtforms.fields.html5 import DateField
 
 def get_grades():
     return Grades.query.all()
@@ -63,6 +64,7 @@ class DonateBookForm(FlaskForm):
     examboard = QuerySelectField('Board', query_factory=get_boards, get_label='board', allow_blank=True)
     publisher = StringField('Publisher')
     location = QuerySelectField('Branch', query_factory=get_locations)
+    planned_date = DateField('Planned Date', format='%Y-%m-%d')
     submit = SubmitField('Donate Book')
 
 class ManageBookForm(FlaskForm):

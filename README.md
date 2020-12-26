@@ -42,9 +42,9 @@ F. Install all flask dependencies
      (venv) $ pip install -r requirements.txt
 ```
 
-G. Set up the environment variables after editing the file with right values
+G. Set up the environment variables after editing the setenv.sh file with right values
 ```
-    (venv) $ . ./.setenv.sh
+    (venv) $ . ./setenv.sh
 ```
 Everytime you close the terminal window and start afresh, you will have to run steps D and G.
 
@@ -101,8 +101,8 @@ A. General Improvements
 
     a) Session timeout is not there.
     b) Documentation
-    c) Remove prints, debug settings
-    d) Find correct syntax to insert date values
+    c) Remove prints, debug settings ** Done **
+    d) Find correct syntax to insert date values **Done**
 
 B. Index Page
 
@@ -143,18 +143,44 @@ H. Manage
 
 1. How to drop the entire database and start afresh?
 
+    If you want to start afresh, remove the db file and the migrations folder.
+    (venv) $ rm bookrepo.db
+    (venv) $ rm -rf migrations
+
+    Then execute setup step H and I again.
+    
 2. How to view actual table schema?
+
+    Connect to the sqlite prompt and run the following command
+    (venv) $ sqlite3 bookrepo.db
+    sqlite> .output schema-dump.sql
+    sqlite> .dump
+    sqlite> .exit
 
 3. How to view table data?
 
+    Connect to the sqlite prompt and run the following command
+    (venv) $ sqlite3 bookrepo.db
+    sqlite> select * from books;   
+
 4. How to enable SQL logging?
 
+    Edit the config.py file.
+    Change the value of variable SQLALCHEMY_ECHO = True
+
 5. How to add more master data?
+
+    (venv) $ sqlite3 bookrepo.db
+    sqlite> Enter normal SQL commands here. 
 
 
 **References**
 
-1. The work is inspired by https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
+0. Dummies guide for [Flask] (https://codeburst.io/flask-for-dummies-a-beginners-guide-to-flask-part-uno-53aec6afc5b1)
 
-2. Stackoverflow
+1. The work is inspired by [Miguel's blog](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+
+2. Used Stackoverflow extensively
+
+3. SQLite [tutorial]https://www.sqlitetutorial.net/
 

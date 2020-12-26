@@ -7,16 +7,18 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Books, Branch, BookItem, Transactions
 from werkzeug.urls import url_parse
 from app.email import send_password_reset_email, send_reservation_email, send_donation_email
-from flask import jsonify
 from app.getBookByISBN import getISBNInfo
-from sqlalchemy.exc import IntegrityError
 
+
+# Default Home Page. It shows all the branch information.
 @app.route('/')
 @app.route('/index')
 def index():
     outputData = []
     outputData = Branch.query.all()
     return render_template('index.html', title='Home', outputData=outputData)
+
+# Login Page. Validates the login credentials.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -34,17 +36,20 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
+# Logout Page.
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# User Home Page. Shown to user once they login.
+# Displays the recent 3 transactions and user profile information
 @app.route('/results')
 def results():
     outputData = []
     outputData = User.query.get(current_user.id)
     transactions =[]
-    # transactions = outputData.transactions.filter_by(transaction_account = current_user.id).all()
+    # Table joins are requires to get the details and replace the ids
     transactions = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Transactions.transaction_id, Books.title, Transactions.transaction_type, Transactions.transaction_date, Transactions.award_points).filter(Transactions.transaction_account == current_user.id).order_by(Transactions.transaction_date.desc()).limit(3)
 
     if not outputData:
@@ -54,12 +59,14 @@ def results():
         # display results
         return render_template('results.html', transactions=transactions, outputData=outputData)
 
+# User Registration. Shown to user for registration.
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Save user data
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -169,20 +176,10 @@ def searchdetails(inputdata):
         flash('Sorry, No books found for you search conditions. Please search again')
         return redirect('/search')
         # use response to populate reservation page
-    print('lets get the itemid:')
-    print(form.errors)
-
-    if form.is_submitted():
-        print('submitted')
-
-    if form.validate():
-        print ('valid')
-
-    print(form.errors)
 
     if form.validate_on_submit():
         selected_book_item_id = 1
-        print('itemid:' + str(selected_book_item_id))
+
         bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
         bookitem.status = 'RESERVED'
 
@@ -219,25 +216,24 @@ def donatedetails():
     form.author.data = inputdata.split("::")[1]
     form.isbn.data = inputdata.split("::")[2]
 
-    # save the actual provided values
-    grade = form.grade.data
-    subject = form.subject.data
-    examboard = form.examboard.data
-
-    if str(grade) == 'None':
-        grade = ''
-
-    if str(subject) == 'None':
-        subject = ''
-
-    if str(examboard) == 'None':
-        examboard = ''
-
     if form.validate_on_submit():
         outputData = Books.query.filter_by(isbn=form.isbn.data).all()
-        print('check outputdata')
+
         if not outputData:
-            print('not outputdata')
+            # save the actual provided values
+            grade = form.grade.data
+            subject = form.subject.data
+            examboard = form.examboard.data
+
+            if str(grade) == 'None':
+                grade = ''
+
+            if str(subject) == 'None':
+                subject = ''
+
+            if str(examboard) == 'None':
+                examboard = ''
+
             book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data, grade=grade, subject=subject, publisher=form.publisher.data, examboard=examboard)
             db.session.add(book)
             db.session.commit()
@@ -246,9 +242,9 @@ def donatedetails():
             # TO-DO: remove hardcoding
             bi_book_id = outputData[0].book_id
         
-        # TO-DO: remove hardcoding
-        print('location' + str(form.location.data))
-        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=1 )
+        # TO-DO: remove hardcoding for branch
+        promise_date = form.planned_date.data
+        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=1, promise_date= promise_date)
         db.session.add(book_item)
         db.session.commit()
         # TO-DO: send_donation_email 
