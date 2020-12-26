@@ -2,20 +2,23 @@
 
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm
+from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Books, Branch, BookItem, Transactions, AwardPoints
+from app.models import User, Books, Branch, BookItem, Transactions
 from werkzeug.urls import url_parse
-from app.email import send_password_reset_email
-from flask import jsonify
+from app.email import send_password_reset_email, send_reservation_email, send_donation_email
 from app.getBookByISBN import getISBNInfo
 
+
+# Default Home Page. It shows all the branch information.
 @app.route('/')
 @app.route('/index')
 def index():
     outputData = []
     outputData = Branch.query.all()
     return render_template('index.html', title='Home', outputData=outputData)
+
+# Login Page. Validates the login credentials.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -33,33 +36,37 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
+# Logout Page.
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# User Home Page. Shown to user once they login.
+# Displays the recent 3 transactions and user profile information
 @app.route('/results')
 def results():
     outputData = []
     outputData = User.query.get(current_user.id)
-    awardPoints = []
-    awardPoints = AwardPoints.query.filter_by(account_id = current_user.id).all()
     transactions =[]
-    transactions = Transactions.query.filter_by(transaction_account = current_user.id).all()
+    # Table joins are requires to get the details and replace the ids
+    transactions = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Transactions.transaction_id, Books.title, Transactions.transaction_type, Transactions.transaction_date, Transactions.award_points).filter(Transactions.transaction_account == current_user.id).order_by(Transactions.transaction_date.desc()).limit(3)
 
     if not outputData:
         flash('No results found!')
         return redirect('/')
     else:
         # display results
-        return render_template('results.html', transactions=transactions, outputData=outputData, awardPoints=awardPoints)
+        return render_template('results.html', transactions=transactions, outputData=outputData)
 
+# User Registration. Shown to user for registration.
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Save user data
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -102,15 +109,87 @@ def reset_password(token):
 def search():
     form = SearchBookForm()
     if form.validate_on_submit():
-        outputData = []
-        outputData = getISBNInfo(request.form['isbn'])
-        if not outputData:
-            flash('No results found!')
-            return redirect('/')
-        else:
-        # use response to populate donation page
-            return redirect(url_for('donatedetails', indata = outputData))
+        isbn = form.isbn.data
+        title = form.title.data 
+        author = form.author.data
+        grade = form.grade.data 
+        subject = form.subject.data 
+        examboard = form.examboard.data
+        publisher = form.publisher.data
+        
+        if str(grade) == 'None':
+            grade = ''
+
+        if str(subject) == 'None':
+            subject = ''
+
+        if str(examboard) == 'None':
+            examboard = ''
+
+        retvalue = isbn + '::' + title + '::' + author + '::' + str(grade) + '::' + str(subject) + '::' + str(examboard) + '::' + publisher
+
+        return redirect(url_for('searchdetails', inputdata = retvalue))   
     return render_template('search.html', title='SearchBook',form=form)
+
+@app.route('/searchdetails/<inputdata>', methods=['GET','POST'])
+@login_required
+def searchdetails(inputdata):
+    inputisbn = inputdata.split("::")[0]
+    inputtitle = inputdata.split("::")[1]
+    inputauthor = inputdata.split("::")[2]
+    inputgrade = inputdata.split("::")[3]
+    inputsubject = inputdata.split("::")[4]
+    inputexamboard = inputdata.split("::")[5]
+    inputpublisher = inputdata.split("::")[6]
+
+    outputData = []
+    # outputData = Books.query.filter_by(isbn = isbn).all()
+    query = Books.query.join(BookItem, BookItem.book_id == Books.book_id).join(Branch, Branch.branch_id == BookItem.branch_id).add_columns(Books.isbn, Books.title, Books.author, BookItem.status, Branch.branch_name, Branch.city, BookItem.book_item_id)
+
+
+    if inputisbn:
+        search = "%{}%".format(inputisbn)
+        query = query.filter(Books.isbn.like(search))
+    if inputtitle:
+        search = "%{}%".format(inputtitle)
+        query = query.filter(Books.title.like(search))
+    if inputauthor:
+        search = "%{}%".format(inputauthor)    
+        query = query.filter(Books.author.like(search))
+    if inputgrade:
+        search = "%{}%".format(inputgrade)
+        query = query.filter(Books.grade.like(search))
+    if inputsubject:
+        search = "%{}%".format(inputsubject)
+        query = query.filter(Books.subject.like(search))
+    if inputexamboard:
+        search = "%{}%".format(inputexamboard)    
+        query = query.filter(Books.examboard.like(search))
+    if inputpublisher:
+        search = "%{}%".format(inputpublisher)    
+        query = query.filter(Books.publisher.like(search))
+
+    outputData = query.all()
+
+    form = ReserveBookForm()
+    if not outputData:
+        flash('Sorry, No books found for you search conditions. Please search again')
+        return redirect('/search')
+        # use response to populate reservation page
+
+    if form.validate_on_submit():
+        selected_book_item_id = 1
+
+        bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
+        bookitem.status = 'RESERVED'
+
+        transaction = Transactions(book_item_id=selected_book_item_id, transaction_account=current_user.id, transaction_type = 'RESERVE', award_points = 0)
+        db.session.add(transaction)
+        db.session.commit()
+        # TO-DO: send_reservation_email 
+        flash('Congratulations, you have reserved the book! ' + str(transaction.transaction_id))
+        return redirect(url_for('index'))
+    return render_template('reserve.html', outputData=outputData,form=form)
 
 @app.route('/donate', methods=['GET', 'POST'])
 @login_required
@@ -131,15 +210,44 @@ def donate():
 @login_required
 def donatedetails():
     form = DonateBookForm()
+    # use response to populate donation page
     inputdata = request.args.get("indata")
     form.title.data = inputdata.split("::")[0]
     form.author.data = inputdata.split("::")[1]
     form.isbn.data = inputdata.split("::")[2]
+
     if form.validate_on_submit():
-        book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data
-        ,grade=form.grade.data, subject=form.subject.data, publisher=form.publisher.data, examboard=form.examboard.data)
-        db.session.add(book)
+        outputData = Books.query.filter_by(isbn=form.isbn.data).all()
+
+        if not outputData:
+            # save the actual provided values
+            grade = form.grade.data
+            subject = form.subject.data
+            examboard = form.examboard.data
+
+            if str(grade) == 'None':
+                grade = ''
+
+            if str(subject) == 'None':
+                subject = ''
+
+            if str(examboard) == 'None':
+                examboard = ''
+
+            book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data, grade=grade, subject=subject, publisher=form.publisher.data, examboard=examboard)
+            db.session.add(book)
+            db.session.commit()
+            bi_book_id = book.book_id
+        else:
+            # TO-DO: remove hardcoding
+            bi_book_id = outputData[0].book_id
+        
+        # TO-DO: remove hardcoding for branch
+        promise_date = form.planned_date.data
+        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=1, promise_date= promise_date)
+        db.session.add(book_item)
         db.session.commit()
+        # TO-DO: send_donation_email 
         flash('Congratulations, you have donated the book!')
         return redirect(url_for('index'))
     return render_template('donate.html', title='Donate',form=form)

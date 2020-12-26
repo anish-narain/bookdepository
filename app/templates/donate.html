@@ -3,62 +3,71 @@
 {% block app_content %}
 <title>Donate</title>
     <div class="container">
-    <br>
-    <br>
-    <p align="center"><strong>Hi {{ current_user.username }}! Please check the data 
-    returned from service</strong></p>
+    <p align="left"><strong>Hi {{ current_user.username }}, Please check the data returned by Google</strong></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p align="center">
+        <p align="left">
             {{ form.title.label }}<br>
             {{ form.title(size=60) }}<br>
             {% for error in form.title.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p align="center">
+        <p align="left">
             {{ form.isbn.label }}<br>
             {{ form.isbn(size=15) }}<br>
             {% for error in form.isbn.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p align="center">
+        <p align="left">
             {{ form.author.label }}<br>
             {{ form.author(size=32) }}<br>
             {% for error in form.author.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <br>
-        <br>
-        <p align="center"><strong>Please provide the remaining data</strong></p>
+        <p align="left"><strong>Please provide the remaining information</strong></p>
 
-        <p align="center">
-            {{ form.grade.label }}<br>
-            {{ form.grade }}<br>
+        <p align="left">
+            {{ form.grade.label }}
+            {{ form.grade }}
             {% for error in form.grade.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p align="center">
-            {{ form.subject.label }}<br>
-            {{ form.subject }}<br>
+        <p align="left">
+            {{ form.subject.label }}
+            {{ form.subject }}
             {% for error in form.subject.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p align="center">
-            {{ form.examboard.label }}<br>
+        <p align="left">
+            {{ form.examboard.label }}
             {{ form.examboard }}<br>
             {% for error in form.author.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p align="center">
+        <p align="left">
             {{ form.publisher.label }}<br>
             {{ form.publisher(size=32) }}<br>
             {% for error in form.publisher.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.location.label }}<br>
+            {{ form.location }}<br>
+            {% for error in form.location.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="left">
+            {{ form.planned_date.label }}<br>
+            {{ form.planned_date(class='datepicker') }}<br>
+            {% for error in form.planned_date.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

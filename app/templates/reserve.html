@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<title>Reserve</title>
+    <div class="container">
+    <br>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p align="left"><strong>Hi {{ current_user.username }}, Please select from the below search result</strong></p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Branch</th>
+                        <th>City</th>
+                        <th>Choose</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {% for book in outputData %}
+                    <tr id="{{book.book_item_id}}">
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.status }}</td>
+                        <td>{{ book.branch_name }}</td>
+                        <td>{{ book.city }}</td>
+                        {% if book.status == "AVAILABLE" %}
+                        <td><input type="radio" name="chosenoption" id="{{book.book_item_id}}" value="{{book.book_item_id}}"> Select </input></td>
+                        {% else %}
+                        <td>Book not available for reservation</td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                        <tr><em>No books found. Please search again</em></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <br>
+        <p align="center">{{ form.submit() }}</p>
+    </form>
+    </div>
+{% endblock %}

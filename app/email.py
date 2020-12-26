@@ -14,6 +14,25 @@ def send_password_reset_email(user):
                html_body=render_template('email/reset_password.html',
                                          user=user, token=token))
 
+def send_reservation_email(user):
+    send_email('[Book Depository] Your reservation details are enclosed',
+               sender=app.config['ADMINS'][0],
+               recipients=[user.email],
+               text_body=render_template('email/reservation.txt',
+                                         user=user, token=token),
+               html_body=render_template('email/reservation.html',
+                                         user=user, token=token))
+
+def send_donation_email(user):
+    token = user.get_reset_password_token()
+    send_email('[Book Depository] Thanks for your donation',
+               sender=app.config['ADMINS'][0],
+               recipients=[user.email],
+               text_body=render_template('email/donation.txt',
+                                         user=user, token=token),
+               html_body=render_template('email/donation.html',
+                                         user=user, token=token))
+
 
 def send_async_email(app, msg):
     with app.app_context():
