@@ -1,4 +1,4 @@
-Welcome to my NEA project: Book Depository.
+Welcome to my NEA project: Book Depository
 ===========================================
 
 The design document is available here [link](https://www.google.com)
@@ -58,19 +58,19 @@ H. Populate the initial dataset
 
 **To do**
 
-A. Index Page
-
-    a) Nearest centre?
-
-B. General Improvements
+A. General Improvements
 
     a) Session timeout is not there.
     b) Documentation
     c) Remove prints, debug settings
 
+B. Index Page
+
+    a) Nearest centre?
+
 C. User Profile
 
-    ~~a) Show only last 3 transactions~~
+    <del>a) Show only last 3 transactions</del>
     b) Edit profile?
 
 D. Search for Reservation
