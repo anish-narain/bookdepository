@@ -70,7 +70,7 @@ B. General Improvements
 
 C. User Profile
 
-    ~~a) Show only last 3 transactions~~S
+    ~~a) Show only last 3 transactions~~
     b) Edit profile?
 
 D. Search for Reservation
