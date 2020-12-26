@@ -45,7 +45,7 @@ def results():
     outputData = User.query.get(current_user.id)
     transactions =[]
     # transactions = outputData.transactions.filter_by(transaction_account = current_user.id).all()
-    transactions = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Transactions.transaction_id, Books.title, Transactions.transaction_type, Transactions.transaction_date, Transactions.award_points).filter(Transactions.transaction_account == current_user.id)
+    transactions = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Transactions.transaction_id, Books.title, Transactions.transaction_type, Transactions.transaction_date, Transactions.award_points).filter(Transactions.transaction_account == current_user.id).order_by(Transactions.transaction_date.desc()).limit(3)
 
     if not outputData:
         flash('No results found!')
@@ -247,7 +247,7 @@ def donatedetails():
             bi_book_id = outputData[0].book_id
         
         # TO-DO: remove hardcoding
-        print('location' + str(form.data['location']))
+        print('location' + str(form.location.data))
         book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=1 )
         db.session.add(book_item)
         db.session.commit()

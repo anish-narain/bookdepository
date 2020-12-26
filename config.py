@@ -13,3 +13,4 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['Book Depository Support','nea.book.depository@gmail.com']
+    REMEMBER_COOKIE_DURATION = 60

@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 setenv01.sh
-requirements.txt
-app.db
-metadata.sql 
+bookrepo.db
+metadata.sql
+schema.sql
