@@ -8,7 +8,7 @@ The design document is available here [link](https://www.google.com)
 
 A. Pre-requisites
 
-1) Python should be there on machine. Check by typing:
+    a) Python should be there on machine. Check by typing:
 
 ```
 ~ $ python3
@@ -18,7 +18,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> 
 ```
 
-B. Copy the code from here to local machine and ensure that you change directory to bookrepository.
+B. Copy the code from here to local machine and ensure that you change directory to bookrepository. 
 
 C. Create python virtual environment and then activate it
  ```   
@@ -38,7 +38,7 @@ E. Install all flask dependencies
      (venv) $ pip install -r requirements.txt
 ```
 
-F. Set up the environment variables after setting right values
+F. Set up the environment variables after editing the file with right values
 ```
     (venv) $ . ./.setenv.sh
 ```
@@ -54,13 +54,42 @@ H. Populate the initial dataset
 ```
     (venv) $ cat metadata.sql | sqlite3 bookrepo.db
 ```
+I. Quick sanity check before we start running the application
 
-I. Start the application
+    a) Your folder structure now should look something like
+    ```
+    (venv) ~/Anish/nea/bookdepository $ 
+            LICENSE
+            README.md
+            __pycache__
+            app
+                __init__.py		
+                email.py		
+                getBookByISBN.py	
+                models.py		
+                tables.py
+                __pycache__		
+                forms.py		
+                getTransAndPoints.py	
+                routes.py		
+                templates
+            bookdepository.py
+            bookrepo.db
+            config.py
+            metadata.sql
+            migrations
+            requirements.txt
+            setenv.sh
+            venv
+            (venv) ~/Anish/nea/bookdepository $ 
+    ```
+
+J. Start the application
 ```
     (venv) $ flask run
 ```
 
-J. Access the application on local [browser](http://127.0.0.1:5000)
+K. Access the application on local [browser](http://127.0.0.1:5000)
 
 **To do**
 
