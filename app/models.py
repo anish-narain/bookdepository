@@ -90,7 +90,7 @@ class Books(db.Model):
     items = db.relationship('BookItem', backref='book', lazy='dynamic')
 
     def __repr__(self):
-        return '<Books {}>'.format(self.body)
+        return '<Books {}>'.format(self.book_id)
 
 
 class BookItem(db.Model):

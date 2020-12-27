@@ -6,7 +6,7 @@
     <br>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p><strong>We recommend that you search the book by ISBN.</strong></p>
+        <p><strong>This page can be used to search for the books in the repository. We recommend that you search by ISBN (without hashes or space)</strong></p>
         <p align="left">
             {{ form.isbn.label }}<br>
             {{ form.isbn(size=15) }}<br>

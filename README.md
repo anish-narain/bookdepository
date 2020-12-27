@@ -63,30 +63,26 @@ J. Quick sanity check before we start running the application
 
     Your folder structure now should look something like
 
-    (venv) ~/Anish/nea/bookdepository $ 
-            LICENSE
-            README.md
-            __pycache__
-            app
-                __init__.py		
-                email.py		
-                getBookByISBN.py	
-                models.py		
-                tables.py
-                __pycache__		
-                forms.py		
-                getTransAndPoints.py	
-                routes.py		
-                templates
-            bookdepository.py
-            bookrepo.db
-            config.py
-            metadata.sql
-            migrations
-            requirements.txt
-            setenv.sh
-            venv
-            (venv) ~/Anish/nea/bookdepository $ 
+        (venv) ~/Anish/nea/bookdepository $ ls *
+        LICENSE			bookrepo.db		requirements.txt
+        README.md		config.py		setenv.sh
+        bookdepository.py	metadata.sql		
+
+        __pycache__:
+        bookdepository.cpython-37.pyc	config.cpython-37.pyc
+
+        app:
+        __init__.py		forms.py		routes.py
+        __pycache__		getBookByISBN.py	tables.py
+        email.py		models.py		templates
+
+        migrations:
+        README		alembic.ini	script.py.mako
+        __pycache__	env.py		versions
+
+        venv:
+        bin		include		lib		pyvenv.cfg
+        (venv) ~/Anish/nea/bookdepository $ 
 
 K. Start the application
 ```
@@ -99,7 +95,7 @@ L. Access the application on local [browser](http://127.0.0.1:5000)
 
 A. General Improvements
 
-    a) Session timeout is not there.
+    a) Session timeout is not there. ** Done **
     b) Documentation
     c) Remove prints, debug settings ** Done **
     d) Find correct syntax to insert date values **Done**
@@ -123,6 +119,7 @@ E. Reserve
     b) Send reservation email
     c) Future dated reservations
     d) Send email once reserved book is available
+    e) Limit result to 25 rows ** Done **
 
 F. Search for Donation
 

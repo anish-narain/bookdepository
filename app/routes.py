@@ -1,6 +1,6 @@
 
 
-from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask import render_template, flash, redirect, url_for, request, jsonify, session, send_from_directory
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -9,6 +9,7 @@ from werkzeug.urls import url_parse
 from app.email import send_password_reset_email, send_reservation_email, send_donation_email
 from app.getBookByISBN import getISBNInfo
 from sqlalchemy import func
+import os
 
 
 # Default Home Page. It shows all the branch information.
@@ -23,6 +24,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
+        session.permanent = True
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
@@ -115,18 +117,18 @@ def search():
         isbn = form.isbn.data
         title = form.title.data 
         author = form.author.data
-        grade = form.grade.data 
-        subject = form.subject.data 
-        examboard = form.examboard.data
         publisher = form.publisher.data
         
-        if str(grade) == 'None':
+        grade = request.form['grade']
+        subject = request.form['subject']
+        examboard = request.form['examboard']
+
+        # When dropdown isnt selected, it sends None. Need to blank it 
+        if str(grade) == '__None':
             grade = ''
-
-        if str(subject) == 'None':
+        if str(subject) == '__None':
             subject = ''
-
-        if str(examboard) == 'None':
+        if str(examboard) == '__None':
             examboard = ''
 
         retvalue = isbn + '::' + title + '::' + author + '::' + str(grade) + '::' + str(subject) + '::' + str(examboard) + '::' + publisher
@@ -172,7 +174,7 @@ def searchdetails(inputdata):
         search = "%{}%".format(inputpublisher)    
         query = query.filter(Books.publisher.like(search))
 
-    outputData = query.all()
+    outputData = query.limit(25)
 
     form = ReserveBookForm()
     if not outputData:
@@ -181,16 +183,17 @@ def searchdetails(inputdata):
         # use response to populate reservation page
 
     if form.validate_on_submit():
-        selected_book_item_id = 1
-
+        selected_book_item_id = request.form['chosenoption']
         bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
         bookitem.status = 'RESERVED'
+        db.session.commit()
+
 
         transaction = Transactions(book_item_id=selected_book_item_id, transaction_account=current_user.id, transaction_type = 'RESERVE', award_points = 0)
         db.session.add(transaction)
         db.session.commit()
         # TO-DO: send_reservation_email 
-        flash('Congratulations, you have reserved the book! ' + str(transaction.transaction_id))
+        flash('Congratulations, you have reserved the book! ')
         return redirect(url_for('index'))
     return render_template('reserve.html', outputData=outputData,form=form)
 
@@ -220,21 +223,20 @@ def donatedetails():
     form.isbn.data = inputdata.split("::")[2]
 
     if form.validate_on_submit():
+        # check if book already exists in Books
         outputData = Books.query.filter_by(isbn=form.isbn.data).all()
-
         if not outputData:
-            # save the actual provided values
-            grade = form.grade.data
-            subject = form.subject.data
-            examboard = form.examboard.data
+            # if not, save into Books
+            grade = request.form['grade']
+            subject = request.form['subject']
+            examboard = request.form['examboard']
 
-            if str(grade) == 'None':
+            # When dropdown isnt selected, it sends None. Need to blank it 
+            if str(grade) == '__None':
                 grade = ''
-
-            if str(subject) == 'None':
+            if str(subject) == '__None':
                 subject = ''
-
-            if str(examboard) == 'None':
+            if str(examboard) == '__None':
                 examboard = ''
 
             book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data, grade=grade, subject=subject, publisher=form.publisher.data, examboard=examboard)
@@ -242,14 +244,22 @@ def donatedetails():
             db.session.commit()
             bi_book_id = book.book_id
         else:
-            # TO-DO: remove hardcoding
+            # otherwise get the book id, to be used while saving bookitem
             bi_book_id = outputData[0].book_id
         
-        # TO-DO: remove hardcoding for branch
         promise_date = form.planned_date.data
-        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=1, promise_date= promise_date)
+        selected_location = request.form['location']
+        # Save into BookItem
+        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=selected_location, promise_date= promise_date)
         db.session.add(book_item)
         db.session.commit()
+        bi_book_item_id = book_item.book_item_id
+        
+        # Save into Transactions
+        transaction = Transactions(book_item_id=bi_book_item_id, transaction_account=current_user.id, transaction_type = 'PROMISED', award_points = 0)
+        db.session.add(transaction)
+        db.session.commit()
+
         # TO-DO: send_donation_email 
         flash('Congratulations, you have donated the book!')
         return redirect(url_for('index'))
@@ -281,3 +291,8 @@ def manage():
 @app.route('/getISBNDetails', methods=['POST'])
 def isbn_details():
     return jsonify({'text': getISBNInfo(request.form['isbn'])})
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                          'favicon.ico',mimetype='image/vnd.microsoft.icon')

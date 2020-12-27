@@ -7,7 +7,6 @@
     
 
     <p><strong>Here are your recent transactions</strong></p>
-      <br>
       {% for rows in transactions %}
         <ul id="rows.transaction_id" align="center">
           <li>
@@ -34,6 +33,8 @@
         {% else %}
             <em>You have no recent transactions</em>
         {% endfor %}
+    <br>
+    <br>
       <p><strong>Your have so far earned {{ totalpoints }} points</strong></p>
       <p><strong>Your profile details are:</strong></p>
  
