@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <br>
+    <br>
+    <p align="center">Hi {{ current_user.username }}, Please use this page to register your interest in a book !!!</p>
+    <br>
+    <br>
+    <p align="center">To register, enter the 13 or 10 digit ISBN of the book, without spaces or hyphens. On the next page, you can validate the details</p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p align="center">
+            {{ form.isbn.label }}<br>
+            {{ form.isbn(size=13) }}<br>
+            {% for error in form.isbn.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="center">{{ form.submit() }}</p>
+{% endblock %}

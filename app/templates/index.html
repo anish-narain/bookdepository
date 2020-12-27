@@ -30,7 +30,27 @@
         </ul>
     {% endfor %}
     <br>
-    <br>
+    <p><strong>Here are some books people are interested in borrowing. Please consider donating if you have them.</strong></p>
+    <table class="table">
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {% for book in wishlistData %}
+                    <tr id="{{book.book_item_id}}">
+                        <td>{{ book.isbn }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                    </tr>
+                    {% else %}
+                        <tr><em>Wow, no wishlist</em></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
     {% if current_user.is_anonymous %}
     <p align="center"><strong>Please login to use the site.</strong></p>
     {% endif %}

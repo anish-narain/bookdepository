@@ -2,7 +2,7 @@
 
 from flask import render_template, flash, redirect, url_for, request, jsonify, session, send_from_directory
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm
+from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm, WishBookForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Books, Branch, BookItem, Transactions
 from werkzeug.urls import url_parse
@@ -18,7 +18,10 @@ import os
 def index():
     outputData = []
     outputData = Branch.query.all()
-    return render_template('index.html', title='Home', outputData=outputData)
+    wishlistData = []
+    # outputData = Books.query.filter_by(isbn = isbn).all()
+    wishlistData = Books.query.join(BookItem, BookItem.book_id == Books.book_id).add_columns(Books.isbn, Books.title, Books.author).filter(BookItem.status == 'WISHED').all()
+    return render_template('index.html', title='Home', outputData=outputData, wishlistData=wishlistData)
 
 # Login Page. Validates the login credentials.
 @app.route('/login', methods=['GET', 'POST'])
@@ -151,7 +154,6 @@ def searchdetails(inputdata):
     # outputData = Books.query.filter_by(isbn = isbn).all()
     query = Books.query.join(BookItem, BookItem.book_id == Books.book_id).join(Branch, Branch.branch_id == BookItem.branch_id).add_columns(Books.isbn, Books.title, Books.author, BookItem.status, Branch.branch_name, Branch.city, BookItem.book_item_id)
 
-
     if inputisbn:
         search = "%{}%".format(inputisbn)
         query = query.filter(Books.isbn.like(search))
@@ -175,12 +177,14 @@ def searchdetails(inputdata):
         query = query.filter(Books.publisher.like(search))
 
     outputData = query.limit(25)
+    print(str(outputData))
 
-    form = ReserveBookForm()
     if not outputData:
         flash('Sorry, No books found for you search conditions. Please search again')
         return redirect('/search')
         # use response to populate reservation page
+    
+    form = ReserveBookForm()
 
     if form.validate_on_submit():
         selected_book_item_id = request.form['chosenoption']
@@ -296,3 +300,57 @@ def isbn_details():
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
+@app.route('/wish', methods=['GET', 'POST'])
+@login_required
+def wish():
+    form = SearchISBNForm()
+    if form.validate_on_submit():
+        outputData = []
+        outputData = getISBNInfo(request.form['isbn'])
+        if not outputData:
+            flash('No results found!')
+            return redirect('/wish')
+        else:
+        # use response to populate donation page
+            return redirect(url_for('wishdetails', indata = outputData))
+    return render_template('wishbook.html', title='SearchBook',form=form)
+
+@app.route('/wishdetails', methods=['GET', 'POST'])
+@login_required
+def wishdetails():
+    form = WishBookForm()
+    # use response to populate donation page
+    inputdata = request.args.get("indata")
+    form.title.data = inputdata.split("::")[0]
+    form.author.data = inputdata.split("::")[1]
+    form.isbn.data = inputdata.split("::")[2]
+
+    if form.validate_on_submit():
+        # check if book already exists in Books
+        outputData = Books.query.filter_by(isbn=form.isbn.data).all()
+        if not outputData:
+            book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data)
+            db.session.add(book)
+            db.session.commit()
+            bi_book_id = book.book_id
+        else:
+            # otherwise get the book id, to be used while saving bookitem
+            bi_book_id = outputData[0].book_id
+        
+        # Save into BookItem
+        book_item = BookItem(book_id=bi_book_id, status='WISHED')
+        db.session.add(book_item)
+        db.session.commit()
+        bi_book_item_id = book_item.book_item_id
+        
+        # Save into Transactions
+        transaction = Transactions(book_item_id=bi_book_item_id, transaction_account=current_user.id, transaction_type = 'WISHED', award_points = 0)
+        db.session.add(transaction)
+        db.session.commit()
+
+        # TO-DO: send_donation_email 
+        flash('Congratulations, you have added the book to your wishlist!')
+        return redirect(url_for('index'))
+    return render_template('wish.html', title='Donate',form=form)
+
