@@ -115,20 +115,20 @@ D. Search for Reservation
 
 E. Reserve
 
-    a) Currently the option list is hardcoded. Generalize it
-    b) Send reservation email
-    c) Future dated reservations
-    d) Send email once reserved book is available
+    a) Currently the option list is hardcoded. Generalize it ** Done **
+    b) Send reservation email ** Done **
+    c) Future dated reservations ** Cant do, change design **
+    d) Send email once reserved book is available ** Done**
     e) Limit result to 25 rows ** Done **
 
 F. Search for Donation
 
-    a) Validation for ISBN
+    a) Validation for ISBN **Partially done. Need to check for integers too**
     b) Handle when service is down or no information is available
 
 G. Donate
 
-    a) Send donation email
+    a) Send donation email ** Done **
 
 H. Manage
 

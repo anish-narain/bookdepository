@@ -2,11 +2,11 @@
 
 from flask import render_template, flash, redirect, url_for, request, jsonify, session, send_from_directory
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm, WishBookForm
+from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm, WishBookForm, ManageBookForm, ManageDetailsForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Books, Branch, BookItem, Transactions, BookCondition
 from werkzeug.urls import url_parse
-from app.email import send_password_reset_email, send_reservation_email, send_donation_email, send_registration_email
+from app.email import send_password_reset_email, send_reservation_email, send_donation_email, send_registration_email, send_transaction_email
 from app.getBookByISBN import getISBNInfo
 from sqlalchemy import func
 import os
@@ -204,7 +204,7 @@ def searchdetails(inputdata):
         db.session.add(transaction)
         db.session.commit()
 
-        # TO-DO: send_reservation_email
+        # send_reservation_email
         user = User.query.filter_by(id=current_user.id).first()
         reservation_details = BookItem.query.join(Branch, Branch.branch_id == BookItem.branch_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Books.title,Branch.branch_name, Branch.city).filter(BookItem.book_item_id == selected_book_item_id).first()
 
@@ -286,28 +286,46 @@ def donatedetails():
         return redirect(url_for('results'))
     return render_template('donate.html', title='Donate',form=form)
 
-
 @app.route('/manage', methods=['GET', 'POST'])
 @login_required
 def manage():
-    form = DonateBookForm()
+    form = ManageBookForm()
     if form.validate_on_submit():
-        book = Books(title=form.title.data, author=form.author.data, isbn=form.isbn.data)
-        db.session.add(book)
+        transactionid=form.transactionid.data
+        return redirect(url_for('managedetails', inputdata = transactionid)) 
+    return render_template('manage.html', title='Home',form=form)
+
+@app.route('/managedetails/<inputdata>', methods=['GET','POST'])
+@login_required
+def managedetails(inputdata):
+    outputData = []
+    outputData = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Branch, Branch.branch_id == BookItem.branch_id).join(User, User.id == Transactions.transaction_account).join(Books, Books.book_id == BookItem.book_id).add_columns(Books.isbn, Books.title, Books.author, Branch.branch_name, Branch.city, BookItem.book_item_id, Transactions.transaction_type, User.id).filter(Transactions.transaction_id == inputdata).first()
+    if outputData.transaction_type == 'PROMISED':
+        new_status = 'AVAILABLE'
+        new_transaction_type = 'RECEIVED'
+
+    if outputData.transaction_type == 'RESERVE':
+        new_status = 'ISSUED'
+        new_transaction_type = 'ISSUE'
+
+    form = ManageDetailsForm()
+    if form.validate_on_submit():
+        selected_book_item_id = request.form['chosenoption']
+        bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
+        bookitem.status = new_status
         db.session.commit()
-        flash('Congratulations, you have donated the book!')
-        return redirect(url_for('index'))
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', posts=posts)
+
+        transaction = Transactions.query.filter_by(transaction_id = inputdata).first()
+        transaction.transaction_type = new_transaction_type
+        transaction.award_points = 10
+        db.session.commit()
+
+        # send_transaction_email
+        user = User.query.filter_by(id=outputData.id).first()
+        transid = inputdata
+        send_transaction_email(user, transid)
+        return redirect(url_for('results'))
+    return render_template('managedetails.html', outputData=outputData,form=form)
 
 @app.route('/getISBNDetails', methods=['POST'])
 def isbn_details():

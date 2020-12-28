@@ -1,6 +1,4 @@
 Dear {{ user.username }},
-
 Thanks for donating the book: {{send_book_title}} at {{branch.branch_name}}, {{branch.city}}. Please take an appointment before you visit the centre and quote the donation number {{transaction.transaction_id}} while depositing the book.
-
 Sincerely,
 The Book Depository Team

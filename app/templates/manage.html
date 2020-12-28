@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
-    {% endfor %}
+    <p align="center">Please enter the transaction id to fetch details</p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p align="center">
+            {{ form.transactionid.label }}<br>
+            {{ form.transactionid(size=5) }}<br>
+            {% for error in form.transactionid.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p align="center">{{ form.submit() }}</p>
 {% endblock %}

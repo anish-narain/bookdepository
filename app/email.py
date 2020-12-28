@@ -41,6 +41,15 @@ def send_donation_email(user, send_book_title, transaction, branch):
                                          user=user, send_book_title = send_book_title, transaction = transaction, branch = branch))
 
 
+def send_transaction_email(user, transid):
+    send_email('[Book Depository] Thanks for completing the transaction',
+               sender=app.config['ADMINS'][0],
+               recipients=[user.email],
+               text_body=render_template('email/transaction.txt', 
+                                        user=user, transid = transid),
+               html_body=render_template('email/transaction.html',
+                                        user=user, transid = transid))
+
 def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
