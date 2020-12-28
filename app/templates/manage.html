@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block app_content %}
+<title>Manage Transaction</title>
+    <div class="container">
     <p align="center">Please enter the transaction id to fetch details</p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
@@ -12,4 +14,6 @@
             {% endfor %}
         </p>
         <p align="center">{{ form.submit() }}</p>
+        </form>
+    </div>
 {% endblock %}

@@ -16,6 +16,7 @@
                         <th>Transaction Type</th>
                         <th>Branch</th>
                         <th>City</th>
+                        <th>Book Condition</th>
                         <th>Choose</th>
                     <tr>
                 </thead>
@@ -27,13 +28,13 @@
                         <td>{{ outputData.transaction_type }}</td>
                         <td>{{ outputData.branch_name }}</td>
                         <td>{{ outputData.city }}</td>
+                        <td> {{ form.condition }} </td>
                         {% if outputData.transaction_type == "RESERVE" %}
                         <td><input type="radio" name="chosenoption" id="{{outputData.book_item_id}}" value="{{outputData.book_item_id}}"> Issue </input></td>
-                        {% elif outputData.transaction_type == "PROMISED" %}
-                        <td> {{ form.condition }} </td>
+                        {% elif outputData.transaction_type == "DONATION" %}
                         <td><input type="radio" name="chosenoption" id="{{outputData.book_item_id}}" value="{{outputData.book_item_id}}"> Receive </input></td>
                         {% else %}
-                        <td>Please check transaction id</td>
+                        <td>Please check transaction id. No valid options exist for this id</td>
                         {% endif %}
                     </tr>
                 </tbody>

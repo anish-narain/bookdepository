@@ -185,7 +185,6 @@ def searchdetails(inputdata):
         query = query.filter(Books.publisher.like(search))
 
     outputData = query.limit(25)
-    print(str(outputData))
 
     if not outputData:
         flash('Sorry, No books found for you search conditions. Please search again')
@@ -268,13 +267,13 @@ def donatedetails():
         promise_date = form.planned_date.data
         selected_location = request.form['location']
         # Save into BookItem
-        book_item = BookItem(book_id=bi_book_id, status='PROMISED', branch_id=selected_location, promise_date= promise_date)
+        book_item = BookItem(book_id=bi_book_id, status='DONATED', branch_id=selected_location, promise_date= promise_date)
         db.session.add(book_item)
         db.session.commit()
         bi_book_item_id = book_item.book_item_id
         
         # Save into Transactions
-        transaction = Transactions(book_item_id=bi_book_item_id, transaction_account=current_user.id, transaction_type = 'PROMISED', award_points = 0)
+        transaction = Transactions(book_item_id=bi_book_item_id, transaction_account=current_user.id, transaction_type = 'DONATION', award_points = 0)
         db.session.add(transaction)
         db.session.commit()
 
@@ -300,31 +299,47 @@ def manage():
 def managedetails(inputdata):
     outputData = []
     outputData = Transactions.query.join(BookItem, BookItem.book_item_id == Transactions.book_item_id).join(Branch, Branch.branch_id == BookItem.branch_id).join(User, User.id == Transactions.transaction_account).join(Books, Books.book_id == BookItem.book_id).add_columns(Books.isbn, Books.title, Books.author, Branch.branch_name, Branch.city, BookItem.book_item_id, Transactions.transaction_type, User.id).filter(Transactions.transaction_id == inputdata).first()
-    if outputData.transaction_type == 'PROMISED':
-        new_status = 'AVAILABLE'
-        new_transaction_type = 'RECEIVED'
+    if not outputData:
+        flash('No results found for this transaction id!')
+        return redirect('/manage')
+    else:
+        form = ManageDetailsForm()
+        if outputData.transaction_type == 'DONATION':
+            new_status = 'AVAILABLE'
+            new_transaction_type = 'DEPOSIT'
 
-    if outputData.transaction_type == 'RESERVE':
-        new_status = 'ISSUED'
-        new_transaction_type = 'ISSUE'
+        if outputData.transaction_type == 'RESERVE':
+            new_status = 'ISSUED'
+            new_transaction_type = 'ISSUE'
 
-    form = ManageDetailsForm()
-    if form.validate_on_submit():
-        selected_book_item_id = request.form['chosenoption']
-        bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
-        bookitem.status = new_status
-        db.session.commit()
+        print(form.errors)
 
-        transaction = Transactions.query.filter_by(transaction_id = inputdata).first()
-        transaction.transaction_type = new_transaction_type
-        transaction.award_points = 10
-        db.session.commit()
+        if form.is_submitted():
+            print('submitted')
 
-        # send_transaction_email
-        user = User.query.filter_by(id=outputData.id).first()
-        transid = inputdata
-        send_transaction_email(user, transid)
-        return redirect(url_for('results'))
+        if form.validate():
+            print ('valid')
+
+        print(form.errors)
+
+        if form.validate_on_submit():
+            selected_book_item_id = request.form['chosenoption']
+            bookitem = BookItem.query.filter_by(book_item_id = selected_book_item_id).first()
+            if outputData.transaction_type == 'DONATION':
+                bookitem.condition = request.form['condition']
+            bookitem.status = new_status
+            db.session.commit()
+
+            transaction = Transactions.query.filter_by(transaction_id = inputdata).first()
+            transaction.transaction_type = new_transaction_type
+            transaction.award_points = 10
+            db.session.commit()
+
+            # send_transaction_email
+            user = User.query.filter_by(id=outputData.id).first()
+            transid = inputdata
+            send_transaction_email(user, transid)
+            return redirect(url_for('results'))
     return render_template('managedetails.html', outputData=outputData,form=form)
 
 @app.route('/getISBNDetails', methods=['POST'])
@@ -380,7 +395,7 @@ def wishdetails():
         bi_book_item_id = book_item.book_item_id
         
         # Save into Transactions
-        transaction = Transactions(book_item_id=bi_book_item_id, transaction_account=current_user.id, transaction_type = 'WISHED', award_points = 0)
+        transaction = Transactions(book_item_id=bi_book_item_id, transaction_account=current_user.id, transaction_type = 'WISH', award_points = 0)
         db.session.add(transaction)
         db.session.commit()
 
