@@ -56,13 +56,13 @@ class ResetPasswordForm(FlaskForm):
     submit = SubmitField('Request Password Reset')
 
 class SearchISBNForm(FlaskForm):
-    isbn = StringField('ISBN')
+    isbn = StringField('ISBN', validators=[DataRequired()])
     submit = SubmitField('Get ISBN Details')
 
 class DonateBookForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    isbn = StringField('ISBN')
-    author = StringField('Author')
+    isbn = StringField('ISBN', validators=[DataRequired()])
+    author = StringField('Author', validators=[DataRequired()])
     grade = QuerySelectField('Year', query_factory=get_grades, get_label='grade', allow_blank=True)
     subject = QuerySelectField('Subject', query_factory=get_subjects, get_label='subject', allow_blank=True)
     examboard = QuerySelectField('Board', query_factory=get_boards, get_label='board', allow_blank=True)
@@ -93,6 +93,6 @@ class ReserveBookForm(FlaskForm):
 
 class WishBookForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    isbn = StringField('ISBN')
-    author = StringField('Author')
+    isbn = StringField('ISBN', validators=[DataRequired()])
+    author = StringField('Author', validators=[DataRequired()])
     submit = SubmitField('Add to Wish List')

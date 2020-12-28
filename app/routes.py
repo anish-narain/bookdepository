@@ -210,7 +210,7 @@ def searchdetails(inputdata):
 
         send_reservation_email(user, transaction, reservation_details)
         flash('Congratulations, you have reserved the book! ')
-        return redirect(url_for('index'))
+        return redirect(url_for('results'))
     return render_template('reserve.html', outputData=outputData,form=form)
 
 @app.route('/donate', methods=['GET', 'POST'])
@@ -283,7 +283,7 @@ def donatedetails():
         branch = Branch.query.filter_by(branch_id=selected_location).first()
         send_donation_email(user, send_book_title, transaction, branch)
         flash('Congratulations, you have donated the book!')
-        return redirect(url_for('index'))
+        return redirect(url_for('results'))
     return render_template('donate.html', title='Donate',form=form)
 
 
@@ -368,6 +368,6 @@ def wishdetails():
 
         # TO-DO: send_donation_email 
         flash('Congratulations, you have added the book to your wishlist!')
-        return redirect(url_for('index'))
+        return redirect(url_for('results'))
     return render_template('wish.html', title='Donate',form=form)
 
