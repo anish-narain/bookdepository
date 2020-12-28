@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from app.models import User, Grades, Subjects, Boards, Branch
+from app.models import User, Grades, Subjects, Boards, Branch, BookCondition
 from wtforms.fields.html5 import DateField
 
 def get_grades():
@@ -16,6 +16,10 @@ def get_boards():
 
 def get_locations():
     return Branch.query.all()
+
+def get_conditions():
+    return BookCondition.query.all()
+    
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -79,6 +83,8 @@ class SearchBookForm(FlaskForm):
     subject = QuerySelectField('Subject', query_factory=get_subjects, get_label='subject', allow_blank=True)
     examboard = QuerySelectField('Board', query_factory=get_boards, get_label='board', allow_blank=True)
     publisher = StringField('Publisher')
+    location = QuerySelectField('Branch', query_factory=get_locations)
+    condition = QuerySelectField('Condition', query_factory=get_conditions,get_label='condition', allow_blank=True)
     submit = SubmitField('Search Book')
 
 class ReserveBookForm(FlaskForm):

@@ -4,9 +4,9 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, s
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm, WishBookForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Books, Branch, BookItem, Transactions
+from app.models import User, Books, Branch, BookItem, Transactions, BookCondition
 from werkzeug.urls import url_parse
-from app.email import send_password_reset_email, send_reservation_email, send_donation_email
+from app.email import send_password_reset_email, send_reservation_email, send_donation_email, send_registration_email
 from app.getBookByISBN import getISBNInfo
 from sqlalchemy import func
 import os
@@ -79,6 +79,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        send_registration_email(user)
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -125,6 +126,8 @@ def search():
         grade = request.form['grade']
         subject = request.form['subject']
         examboard = request.form['examboard']
+        branch = request.form['location']
+        condition = request.form['condition']
 
         # When dropdown isnt selected, it sends None. Need to blank it 
         if str(grade) == '__None':
@@ -133,8 +136,10 @@ def search():
             subject = ''
         if str(examboard) == '__None':
             examboard = ''
+        if str(condition) == '__None':
+            condition = ''
 
-        retvalue = isbn + '::' + title + '::' + author + '::' + str(grade) + '::' + str(subject) + '::' + str(examboard) + '::' + publisher
+        retvalue = isbn + '::' + title + '::' + author + '::' + str(grade) + '::' + str(subject) + '::' + str(examboard) + '::' + publisher + '::' + str(branch) + '::' + str(condition)
 
         return redirect(url_for('searchdetails', inputdata = retvalue))   
     return render_template('search.html', title='SearchBook',form=form)
@@ -149,10 +154,12 @@ def searchdetails(inputdata):
     inputsubject = inputdata.split("::")[4]
     inputexamboard = inputdata.split("::")[5]
     inputpublisher = inputdata.split("::")[6]
+    inputbranch = inputdata.split("::")[7]
+    inputcondition = inputdata.split("::")[8]
 
     outputData = []
     # outputData = Books.query.filter_by(isbn = isbn).all()
-    query = Books.query.join(BookItem, BookItem.book_id == Books.book_id).join(Branch, Branch.branch_id == BookItem.branch_id).add_columns(Books.isbn, Books.title, Books.author, BookItem.status, Branch.branch_name, Branch.city, BookItem.book_item_id)
+    query = Books.query.join(BookItem, BookItem.book_id == Books.book_id).join(Branch, Branch.branch_id == BookItem.branch_id).join(BookCondition, BookCondition.id == BookItem.condition).add_columns(Books.isbn, Books.title, Books.author, BookCondition.condition, Branch.branch_name, Branch.city, BookItem.book_item_id).filter(BookItem.status == 'AVAILABLE')
 
     if inputisbn:
         search = "%{}%".format(inputisbn)
@@ -164,14 +171,15 @@ def searchdetails(inputdata):
         search = "%{}%".format(inputauthor)    
         query = query.filter(Books.author.like(search))
     if inputgrade:
-        search = "%{}%".format(inputgrade)
-        query = query.filter(Books.grade.like(search))
+        query = query.filter(Books.grade == inputgrade)
     if inputsubject:
-        search = "%{}%".format(inputsubject)
-        query = query.filter(Books.subject.like(search))
-    if inputexamboard:
-        search = "%{}%".format(inputexamboard)    
-        query = query.filter(Books.examboard.like(search))
+        query = query.filter(Books.subject == inputsubject)
+    if inputexamboard:  
+        query = query.filter(Books.examboard == inputexamboard)
+    if inputcondition:
+        query = query.filter(BookItem.condition == inputcondition)
+    if inputbranch:  
+        query = query.filter(BookItem.branch_id == inputbranch)
     if inputpublisher:
         search = "%{}%".format(inputpublisher)    
         query = query.filter(Books.publisher.like(search))
@@ -192,11 +200,15 @@ def searchdetails(inputdata):
         bookitem.status = 'RESERVED'
         db.session.commit()
 
-
         transaction = Transactions(book_item_id=selected_book_item_id, transaction_account=current_user.id, transaction_type = 'RESERVE', award_points = 0)
         db.session.add(transaction)
         db.session.commit()
-        # TO-DO: send_reservation_email 
+
+        # TO-DO: send_reservation_email
+        user = User.query.filter_by(id=current_user.id).first()
+        reservation_details = BookItem.query.join(Branch, Branch.branch_id == BookItem.branch_id).join(Books, Books.book_id == BookItem.book_id).add_columns(Books.title,Branch.branch_name, Branch.city).filter(BookItem.book_item_id == selected_book_item_id).first()
+
+        send_reservation_email(user, transaction, reservation_details)
         flash('Congratulations, you have reserved the book! ')
         return redirect(url_for('index'))
     return render_template('reserve.html', outputData=outputData,form=form)
@@ -247,10 +259,12 @@ def donatedetails():
             db.session.add(book)
             db.session.commit()
             bi_book_id = book.book_id
+            send_book_title = form.title.data
         else:
             # otherwise get the book id, to be used while saving bookitem
             bi_book_id = outputData[0].book_id
-        
+            send_book_title = outputData[0].title
+
         promise_date = form.planned_date.data
         selected_location = request.form['location']
         # Save into BookItem
@@ -264,7 +278,10 @@ def donatedetails():
         db.session.add(transaction)
         db.session.commit()
 
-        # TO-DO: send_donation_email 
+        # send_donation_email
+        user = User.query.filter_by(id=current_user.id).first()
+        branch = Branch.query.filter_by(branch_id=selected_location).first()
+        send_donation_email(user, send_book_title, transaction, branch)
         flash('Congratulations, you have donated the book!')
         return redirect(url_for('index'))
     return render_template('donate.html', title='Donate',form=form)

@@ -3,32 +3,28 @@
 {% block app_content %}
 <title>Home</title>
     <div class="container">
-    <h2 align="center">Welcome to NEA Book Depository</h2>
+    <h2 align="center">Welcome to Berkshire Book Depository</h2>
+    <h5 align="center">A site to encourage reuse of school books</h5>
     <br>
-    <h4 align="center">This site has been setup to encourage reuse of school books. </h4>
-    <br>
-    <br>
-    <p><strong>We are available at the following locations:</strong></p>
-    {% for rows in outputData %}
-        <ul id="rows.branch_id" align="center">
-          <li>
-              <span class="field-name">Name:</span>
-              <span class="field-value">{{ rows.branch_name }}</span>
-          </li>
-        <li>
-              <span class="field-name">Address:</span>
-              <span class="field-value">{{ rows.address }}</span>
-              <span class="field-value">,</span>
-              <span class="field-value">{{ rows.city }}</span>
-          </li>
-          <li>
-              <span class="field-name">Contact details:</span>
-              <span class="field-value">{{ rows.phone_number }}</span>
-              <span class="field-value">,</span>
-              <span class="field-value">{{ rows.email }}</span>
-          </li>
-        </ul>
-    {% endfor %}
+    <p><strong>We are available at the following locations across Berkshire:</strong></p>
+    <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact Details</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {% for rows in outputData %}
+                    <tr id="{{rows.id}}">
+                    <td>{{ rows.branch_name }}</td>
+                    <td>{{ rows.address }}, {{ rows.city }}</td>
+                    <td>{{ rows.phone_number }}, {{ rows.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
     <br>
     <p><strong>Here are some books people are interested in borrowing. Please consider donating if you have them.</strong></p>
     <table class="table">
@@ -52,6 +48,6 @@
                 </tbody>
             </table>
     {% if current_user.is_anonymous %}
-    <p align="center"><strong>Please login to use the site.</strong></p>
+    <p align="center">Please <strong>LOGIN</strong> to use the site.</p>
     {% endif %}
 {% endblock %}
