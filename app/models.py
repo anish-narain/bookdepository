@@ -90,7 +90,7 @@ class Books(db.Model):
     items = db.relationship('BookItem', backref='book', lazy='dynamic')
 
     def __repr__(self):
-        return '<Books {}>'.format(self.body)
+        return '<Books {}>'.format(self.book_id)
 
 
 class BookItem(db.Model):
@@ -100,6 +100,7 @@ class BookItem(db.Model):
     status = db.Column(db.String(30))
     acquisition_date = db.Column(db.Date)
     promise_date = db.Column(db.Date)
+    condition = db.Column(db.String(30))
     branch_id = db.Column(db.Integer, db.ForeignKey('branch.branch_id'))
     transactions = db.relationship('Transactions',
                                    foreign_keys=[Transactions.book_item_id],
@@ -131,3 +132,7 @@ class Subjects(db.Model):
 class Boards(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board = db.Column(db.String(255))
+
+class BookCondition(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    condition = db.Column(db.String(255))

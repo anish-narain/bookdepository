@@ -7,34 +7,33 @@
     
 
     <p><strong>Here are your recent transactions</strong></p>
-      <br>
-      {% for rows in transactions %}
-        <ul id="rows.transaction_id" align="center">
-          <li>
-              <span class="field-name">Transaction Id:</span>
-              <span class="field-value">{{ rows.transaction_id }}</span>
-          </li>
-          <li>
-              <span class="field-name">Book:</span>
-              <span class="field-value">{{ rows.title }}</span>
-          </li>
-          <li>
-              <span class="field-name">Transaction Type:</span>
-              <span class="field-value">{{ rows.transaction_type }}</span>
-          </li>
-          <li>
-              <span class="field-name">Date:</span>
-              <span class="field-value">{{ rows.transaction_date.strftime('%d-%m-%Y') }}</span>
-          </li>
-                    <li>
-              <span class="field-name">Points:</span>
-              <span class="field-value">{{ rows.award_points}}</span>
-          </li>
-        </ul>
-        {% else %}
-            <em>You have no recent transactions</em>
-        {% endfor %}
-      <br>
+    <table class="table">
+                <thead>
+                    <tr>
+                        <th>Transaction Id</th>
+                        <th>Book</th>
+                        <th>Transaction Type</th>
+                        <th>Date</th>
+                        <th>Points</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    {% for rows in transactions %}
+                    <tr id="{{rows.transaction_id}}">
+                    <td>{{ rows.transaction_id }}</td>
+                    <td>{{ rows.title }}</td>
+                    <td>{{ rows.transaction_type }}</td>
+                    <td>{{ rows.transaction_date.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ rows.award_points }}</td>
+                    </tr>
+                    {% else %}
+                        <em>You have no recent transactions</em>
+                    {% endfor %}
+                </tbody>
+            </table>
+        
+    <br>
+      <p><strong>Your have so far earned {{ totalpoints }} points</strong></p>
       <p><strong>Your profile details are:</strong></p>
  
         <ul id="outputData.username" align="center">

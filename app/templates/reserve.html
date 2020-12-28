@@ -6,7 +6,7 @@
     <br>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p align="left"><strong>Hi {{ current_user.username }}, Please select from the below search result</strong></p>
+        <p align="left"><strong>Hi {{ current_user.username }}, Please select from the below search result (max 25 rows). Please add more filters to limit, if required. </strong></p>
             <table class="table">
                 <thead>
                     <tr>
@@ -25,17 +25,13 @@
                         <td>{{ book.isbn }}</td>
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
-                        <td>{{ book.status }}</td>
+                        <td>{{ book.condition }}</td>
                         <td>{{ book.branch_name }}</td>
                         <td>{{ book.city }}</td>
-                        {% if book.status == "AVAILABLE" %}
                         <td><input type="radio" name="chosenoption" id="{{book.book_item_id}}" value="{{book.book_item_id}}"> Select </input></td>
-                        {% else %}
-                        <td>Book not available for reservation</td>
-                        {% endif %}
                     </tr>
                     {% else %}
-                        <tr><em>No books found. Please search again</em></tr>
+                        <tr><em>No books found. Please search again. You can also choose to add the book to your <a href="http://127.0.0.1:5000/wish">wishlist</a></em></tr>
                     {% endfor %}
                 </tbody>
             </table>

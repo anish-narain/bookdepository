@@ -20,9 +20,10 @@
                 <ul class="nav navbar-nav">
                     {% if current_user.is_anonymous %}
                     {% else %}
-                    <li><a href="{{ url_for('results') }}">Users</a></li>
+                    <li><a href="{{ url_for('results') }}">User Profile</a></li>
                     <li><a href="{{ url_for('search') }}">Search</a></li>
                     <li><a href="{{ url_for('donate') }}">Donate</a></li>
+                    <li><a href="{{ url_for('wish') }}">Wish</a></li>
                     <li><a href="{{ url_for('manage') }}">Manage</a></li>
                     {% endif %}
                 </ul>

@@ -3,7 +3,7 @@
 {% block app_content %}
 <title>Donate</title>
     <div class="container">
-    <p align="left"><strong>Hi {{ current_user.username }}, Please check the data returned by Google</strong></p>
+    <p align="left"><strong>Hi {{ current_user.username }}, Please check the data returned by Google Book Service</strong></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p align="left">
@@ -27,26 +27,32 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p align="left"><strong>Please provide the remaining information</strong></p>
+        <br>
 
+        <p align="left"><strong>Please provide the remaining information</strong></p>
+        <br>
         <p align="left">
             {{ form.grade.label }}
             {{ form.grade }}
             {% for error in form.grade.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p align="left">
+
             {{ form.subject.label }}
             {{ form.subject }}
             {% for error in form.subject.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p align="left">
+
             {{ form.examboard.label }}
-            {{ form.examboard }}<br>
+            {{ form.examboard }}
             {% for error in form.author.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+            {{ form.location.label }}
+            {{ form.location }}
+            {% for error in form.location.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
@@ -54,13 +60,6 @@
             {{ form.publisher.label }}<br>
             {{ form.publisher(size=32) }}<br>
             {% for error in form.publisher.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p align="left">
-            {{ form.location.label }}<br>
-            {{ form.location }}<br>
-            {% for error in form.location.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

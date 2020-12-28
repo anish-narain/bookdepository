@@ -1,0 +1,4 @@
+Dear {{ user.username }},
+Thanks for completing the transaction: {{transid}}. This has earned you 10 points. Please login to the website to check your total points.
+Sincerely,
+The Book Depository Team

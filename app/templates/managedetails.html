@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<title>Reserve</title>
+    <div class="container">
+    <br>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p align="left"><strong>Please validate before completing the transaction.</strong></p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Transaction Type</th>
+                        <th>Branch</th>
+                        <th>City</th>
+                        <th>Book Condition</th>
+                        <th>Choose</th>
+                    <tr>
+                </thead>
+                <tbody>
+                    <tr id="{{outputData.book_item_id}}">
+                        <td>{{ outputData.isbn }}</td>
+                        <td>{{ outputData.title }}</td>
+                        <td>{{ outputData.author }}</td>
+                        <td>{{ outputData.transaction_type }}</td>
+                        <td>{{ outputData.branch_name }}</td>
+                        <td>{{ outputData.city }}</td>
+                        <td> {{ form.condition }} </td>
+                        {% if outputData.transaction_type == "RESERVE" %}
+                        <td><input type="radio" name="chosenoption" id="{{outputData.book_item_id}}" value="{{outputData.book_item_id}}"> Issue </input></td>
+                        {% elif outputData.transaction_type == "DONATION" %}
+                        <td><input type="radio" name="chosenoption" id="{{outputData.book_item_id}}" value="{{outputData.book_item_id}}"> Receive </input></td>
+                        {% else %}
+                        <td>Please check transaction id. No valid options exist for this id</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        <br>
+        <p align="center">{{ form.submit() }}</p>
+    </form>
+    </div>
+{% endblock %}
