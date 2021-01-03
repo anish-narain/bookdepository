@@ -1,4 +1,4 @@
 Dear {{ user.username }},
 Thanks for registering. You can keep this email to retain your username. 
 Sincerely,
-The Book Depository Team
+The Book Bank Team

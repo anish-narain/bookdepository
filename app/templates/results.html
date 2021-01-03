@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block app_content %}
+{% block content %}
 <title>Search Results - Flask User Database</title>
     <div class="container">
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
     <h1 align="center">Your Profile</h1>
-    
-
     <p><strong>Here are your recent transactions</strong></p>
     <table class="table">
                 <thead>
@@ -33,19 +33,24 @@
             </table>
         
     <br>
-      <p><strong>Your have so far earned {{ totalpoints }} points</strong></p>
+      <p><strong>Your have earned {{ totalpoints }} points so far</strong></p>
       <p><strong>Your profile details are:</strong></p>
  
-        <ul id="outputData.username" align="center">
-          <li>
-              <span class="field-name">Name:</span>
-              <span class="field-value">{{ outputData.username }}</span>
-          </li>
-          <li>
-              <span class="field-name">email id:</span>
-              <span class="field-value">{{ outputData.email }}</span>
-          </li>
-        </ul>
+        <p align="left">
+            {{ form.username.label }}
+            {{ form.username(value= outputData.username ) }}
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
 
+            {{ form.email.label }}
+            {{ form.email(size=45, value= outputData.email ) }}
+            {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+            <br>
+            <p align="center">{{ form.submit() }}</p>
+    </form>
     </div>
 {% endblock %}

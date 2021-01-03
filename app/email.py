@@ -4,7 +4,7 @@ from flask import render_template
 from threading import Thread
 
 def send_registration_email(user):
-    send_email('[Book Depository] Welcome to Berkshire Depository',
+    send_email('[Book Bank] Welcome to Berkshire Bank',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/welcome_email.txt',
@@ -14,7 +14,7 @@ def send_registration_email(user):
 
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
-    send_email('[Book Depository] Reset Your Password',
+    send_email('[Book Bank] Reset Your Password',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/reset_password.txt',
@@ -23,7 +23,7 @@ def send_password_reset_email(user):
                                          user=user, token=token))
 
 def send_reservation_email(user, transaction, reservation_details):
-    send_email('[Book Depository] Your reservation details are enclosed',
+    send_email('[Book Bank] Your reservation details are enclosed',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/reservation.txt',
@@ -32,7 +32,7 @@ def send_reservation_email(user, transaction, reservation_details):
                                          user=user, transaction = transaction, reservation_details = reservation_details))
 
 def send_donation_email(user, send_book_title, transaction, branch):
-    send_email('[Book Depository] Thanks for your donation',
+    send_email('[Book Bank] Thanks for your donation',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/donation.txt',
@@ -42,7 +42,7 @@ def send_donation_email(user, send_book_title, transaction, branch):
 
 
 def send_transaction_email(user, transid):
-    send_email('[Book Depository] Thanks for completing the transaction',
+    send_email('[Book Bank] Thanks for completing the transaction',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/transaction.txt', 
