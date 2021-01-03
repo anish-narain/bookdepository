@@ -102,3 +102,7 @@ class ManageDetailsForm(FlaskForm):
     condition = QuerySelectField('Condition', query_factory=get_conditions,get_label='condition')
     submit = SubmitField('Complete Transaction')    
     
+class ManageUserForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Update Your Profile')

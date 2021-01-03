@@ -1,4 +1,4 @@
-Welcome to my NEA project: Book Depository
+Welcome to my NEA project: Book Bank
 ===========================================
 
 The design document is available here [link](https://www.google.com)

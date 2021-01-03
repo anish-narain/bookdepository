@@ -2,7 +2,7 @@
 
 from flask import render_template, flash, redirect, url_for, request, jsonify, session, send_from_directory
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm, WishBookForm, ManageBookForm, ManageDetailsForm
+from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, SearchBookForm, DonateBookForm, SearchISBNForm, ReserveBookForm, WishBookForm, ManageBookForm, ManageDetailsForm, ManageUserForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Books, Branch, BookItem, Transactions, BookCondition
 from werkzeug.urls import url_parse
@@ -21,6 +21,7 @@ def index():
     wishlistData = []
     # outputData = Books.query.filter_by(isbn = isbn).all()
     wishlistData = Books.query.join(BookItem, BookItem.book_id == Books.book_id).add_columns(Books.isbn, Books.title, Books.author).filter(BookItem.status == 'WISHED').all()
+    
     return render_template('index.html', title='Home', outputData=outputData, wishlistData=wishlistData)
 
 # Login Page. Validates the login credentials.
@@ -50,7 +51,8 @@ def logout():
 
 # User Home Page. Shown to user once they login.
 # Displays the recent 3 transactions and user profile information
-@app.route('/results')
+@app.route('/results', methods=['GET', 'POST'])
+@login_required
 def results():
     outputData = []
     outputData = User.query.get(current_user.id)
@@ -60,12 +62,15 @@ def results():
 
     sumpoints = Transactions.query.with_entities(func.sum(Transactions.award_points).label('total')).filter(Transactions.transaction_account == current_user.id).first().total
 
-    if not outputData:
-        flash('No results found!')
-        return redirect('/')
-    else:
-        # display results
-        return render_template('results.html', transactions=transactions, outputData=outputData, totalpoints = sumpoints)
+    form = ManageUserForm()
+    if form.validate_on_submit():
+        user = User.query.get(current_user.id)
+        user.username = form.username.data
+        user.email = form.email.data
+        db.session.commit()
+        flash('Your account details have been updated')
+        return redirect(url_for('login'))
+    return render_template('results.html', transactions=transactions, outputData=outputData, totalpoints = sumpoints, form=form)
 
 # User Registration. Shown to user for registration.
 @app.route('/register', methods=['GET', 'POST'])

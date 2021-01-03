@@ -13,5 +13,6 @@ class Config(object):
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    ADMINS = ['Book Depository Support','nea.book.depository@gmail.com']
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=10)
+    ADMINS = ['Book Bank Support','nea.book.depository@gmail.com']
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=30)
+    REMEMBER_COOKIE_DURATION = datetime.timedelta(minutes=10)

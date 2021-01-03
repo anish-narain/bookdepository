@@ -1,4 +1,4 @@
 Dear {{ user.username }},
 Thanks for reserving the book: {{reservation_details.title}} at {{reservation_details.branch_name}}, {{reservation_details.city}}. Please take an appointment before you visit the centre and quote the reservation number {{transaction.transaction_id}} while collecting the book.
 Sincerely,
-The Book Depository Team
+The Book Bank Team
