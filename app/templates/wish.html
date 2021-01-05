@@ -6,6 +6,8 @@
     <p align="left"><strong>Hi {{ current_user.username }}, Please check the data returned by Google</strong></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
+            <h2 align="center">Check Wish List Detail</h2>
+    <br>
         <p align="left">
             {{ form.title.label }}<br>
             {{ form.title(size=60) }}<br>
