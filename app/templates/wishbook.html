@@ -9,7 +9,7 @@
     <p align="center">Hi {{ current_user.username }}, Please use this page to register your interest in a book !!!</p>
     <br>
     <br>
-    <p align="center">To register, enter the 13 or 10 digit ISBN of the book, without spaces or hyphens. On the next page, you can validate the details</p>
+    <p align="center">To register, enter the 13 or 10 digit ISBN<sup>*</sup> of the book, without spaces or hyphens. On the next page, you can validate the details</p>
 
         <p align="center">
             {{ form.isbn.label }}<br>
@@ -19,6 +19,8 @@
             {% endfor %}
         </p>
         <p align="center">{{ form.submit() }}</p>
+        <br>
+        <p><span style="color: red;"><sup>*</sup>ISBN is listed in the book. It can also found from Amazon site</span></p>
         </form>
     </div>
 {% endblock %}

@@ -7,7 +7,7 @@
         {{ form.hidden_tag() }}
             <h2 align="center">Search Book Bank</h2>
           <br>
-        <p><strong>This page can be used to search for books in the Book Bank. We recommend that you search by ISBN (without hashes or space)</strong></p>
+        <p><strong>This page can be used to search for books in the Book Bank. We recommend that you search by ISBN <sup>*</sup> (without hashes or space)</strong></p>
         <p align="left">
             {{ form.isbn.label }}<br>
             {{ form.isbn(size=15) }}<br>
@@ -75,6 +75,8 @@
         <br>
         
         <p align="center">{{ form.submit() }}</p>
+        <br>
+        <p><span style="color: red;"><sup>*</sup>ISBN is listed in the book. It can also found from Amazon site</span></p>
     </form>
     </div>
 {% endblock %}

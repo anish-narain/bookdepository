@@ -4,7 +4,7 @@ from flask import render_template
 from threading import Thread
 
 def send_registration_email(user):
-    send_email('[Book Bank] Welcome to Berkshire Bank',
+    send_email('[Book Bank] Welcome to Book Bank',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/welcome_email.txt',

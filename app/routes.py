@@ -54,7 +54,7 @@ def logout():
 @login_required
 def results():
     # Get user details 
-    outputData = []
+    outputData = [] 
     outputData = User.query.get(current_user.id)
     transactions =[]
     # Get the 3 recent transactions for this user
@@ -340,16 +340,6 @@ def managedetails(inputdata):
         if outputData.transaction_type == 'RESERVE':
             new_status = 'ISSUED'
             new_transaction_type = 'ISSUE'
-
-        # print(form.errors)
-
-        # if form.is_submitted():
-        #    print('submitted')
-
-        # if form.validate():
-        #    print ('valid')
-
-        # print(form.errors)
 
         if form.validate_on_submit():
             selected_book_item_id = request.form['chosenoption']

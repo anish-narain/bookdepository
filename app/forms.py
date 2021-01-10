@@ -4,6 +4,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app.models import User, Grades, Subjects, Boards, Branch, BookCondition
 from wtforms.fields.html5 import DateField
+from flask_login import current_user
 
 def get_grades():
     return Grades.query.all()
@@ -106,3 +107,13 @@ class ManageUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Update Your Profile')
+
+    def validate_username(self, username):
+        user = User.query.filter(username == username.data).filter(id != current_user.id).first()
+        if user is not None:
+            raise ValidationError('Please use a different username.')
+
+    def validate_email(self, email):
+        user = User.query.filter(email == email.data).filter(id != current_user.id).first()
+        if user is not None:
+            raise ValidationError('Please use a different email address.')

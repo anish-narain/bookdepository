@@ -7,7 +7,7 @@ def getISBNInfo(isbn_input):
     reqstring = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'+ isbn_input
     r = requests.get(reqstring)
     if r.status_code != 200:
-        return _('Error: the ISBN service failed.')
+        return 'Error: the ISBN service failed.'
     
     count = int(r.json()['totalItems'])
     if count > 0:   
@@ -16,4 +16,4 @@ def getISBNInfo(isbn_input):
         isbn = isbn_input
         return title + '::' + author + '::' + isbn
     else:
-        return _('Error: No Data Found for this ISBN.')
+        return 'Error: No Data Found for this ISBN.'
