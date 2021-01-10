@@ -5,8 +5,9 @@
     <div class="container">
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-    <h1 align="center">Your Profile</h1>
-    <p><strong>Here are your recent transactions</strong></p>
+    <h2 align="center">Your Profile</h2>
+    <br>
+    <p><strong>Hi {{ current_user.username }}, here are your recent transactions</strong></p>
     <table class="table">
                 <thead>
                     <tr>
