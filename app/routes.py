@@ -113,6 +113,7 @@ def reset_password(token):
         return redirect(url_for('index'))
     user = User.verify_reset_password_token(token)
     if not user:
+        flash('Password reset failed')
         return redirect(url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -184,6 +185,9 @@ def searchdetails(inputdata):
     if inputauthor:
         search = "%{}%".format(inputauthor)    
         query = query.filter(Books.author.like(search))
+    if inputpublisher:
+        search = "%{}%".format(inputpublisher)    
+        query = query.filter(Books.publisher.like(search))
     
     # Add more filter condition. LIKE condition isnt required as it is dropdown=fixed value
     if inputgrade:
@@ -196,9 +200,7 @@ def searchdetails(inputdata):
         query = query.filter(BookItem.condition == inputcondition)
     if inputbranch:  
         query = query.filter(BookItem.branch_id == inputbranch)
-    if inputpublisher:
-        search = "%{}%".format(inputpublisher)    
-        query = query.filter(Books.publisher.like(search))
+
 
     # Limit to 25 rows to avoid slow response
     outputData = query.limit(25)
@@ -241,9 +243,9 @@ def donate():
         outputData = []
         # call the program which calls Google webservice to get book details
         outputData = getISBNInfo(request.form['isbn'])
-        if not outputData:
-            flash('No results found!')
-            return redirect('/')
+        if (outputData.__contains__("Error")):
+            flash('Unable to fetch data!')
+            return redirect('/donate')
         else:
         # use response to populate donation page
             return redirect(url_for('donatedetails', indata = outputData))

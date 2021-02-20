@@ -5,8 +5,9 @@ from app import app
 
 def getISBNInfo(isbn_input):
     reqstring = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'+ isbn_input
-    r = requests.get(reqstring)
-    if r.status_code != 200:
+    try: 
+        r = requests.get(reqstring)
+    except requests.ConnectionError:
         return 'Error: the ISBN service failed.'
     
     count = int(r.json()['totalItems'])
