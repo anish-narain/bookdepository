@@ -3,6 +3,7 @@ from app import mail, app
 from flask import render_template
 from threading import Thread
 
+# Sends the user registration email
 def send_registration_email(user):
     send_email('[Book Bank] Welcome to Book Bank',
                sender=app.config['ADMINS'][0],
@@ -12,6 +13,7 @@ def send_registration_email(user):
                html_body=render_template('email/welcome_email.html',
                                          user=user))
 
+# Sends email with the link to reset the user's password
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
     send_email('[Book Bank] Reset Your Password',

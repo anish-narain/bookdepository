@@ -7,6 +7,7 @@
     <h5 align="center">A site to encourage the reuse of school books</h5>
     <br>
     <p><strong>We are available at the following locations across Berkshire:</strong></p>
+    <!---->
     <table class="table">
                 <thead>
                     <tr>
@@ -18,6 +19,7 @@
                 <tbody>
                     {% for rows in outputData %}
                     <tr id="{{rows.id}}">
+                    <!--Defines table for the Book Branch details-->
                     <td>{{ rows.branch_name }}</td>
                     <td>{{ rows.address }}, {{ rows.city }}</td>
                     <td>{{ rows.phone_number }}, {{ rows.email }}</td>
@@ -38,6 +40,7 @@
                 <tbody>
                     {% for book in wishlistData %}
                     <tr id="{{book.book_item_id}}">
+                    <!--Defines table for the Wish-list books-->
                         <td>{{ book.isbn }}</td>
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>

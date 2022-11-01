@@ -6,8 +6,9 @@ from time import time
 import jwt
 from sqlalchemy import Integer
 
-
+#initialises transaction object
 class Transactions(db.Model):
+    #attributes/columns of database
     transaction_id = db.Column(db.Integer, primary_key=True)
     book_item_id = db.Column(db.Integer, db.ForeignKey('bookitem.book_item_id'))
     transaction_account = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -15,11 +16,13 @@ class Transactions(db.Model):
     transaction_date = db.Column(db.DateTime, default=datetime.utcnow)
     award_points = db.Column(db.Integer)
 
+    #getter for displaying transaction history on profile page
     def __repr__(self):
         return '<Transactions {}>'.format(self.transaction_id)
 
-
+#initialises user object
 class User(UserMixin, db.Model):
+    #attributes/columns of database
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -59,8 +62,9 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-
+#Initialises branch object
 class Branch(db.Model):
+    #attributes/columns of database
     branch_id = db.Column(db.Integer, primary_key=True)
     branch_name = db.Column(db.String(120))
     city = db.Column(db.String(60))
@@ -70,6 +74,7 @@ class Branch(db.Model):
     contact_person = db.Column(db.String(60))
     items = db.relationship('BookItem', backref='item', lazy='dynamic')
 
+    #defines functions for retrieving values from the database to populate the tables in the main home page
     def __repr__(self):
         return '<Branch {}>'.format(self.branch_id)
 
@@ -77,8 +82,9 @@ class Branch(db.Model):
         return self.branch_name + ', ' + self.city
     
 
-
+#Initialises Book Object
 class Books(db.Model):
+    #attributes/columns of database
     book_id = db.Column(db.Integer, primary_key=True)
     isbn = db.Column(db.String(30), index=True, unique=True)
     title = db.Column(db.String(120), index=True)
@@ -89,10 +95,11 @@ class Books(db.Model):
     subject = db.Column(db.String(30))
     items = db.relationship('BookItem', backref='book', lazy='dynamic')
 
+#method (getter) which returns Book ID
     def __repr__(self):
         return '<Books {}>'.format(self.book_id)
 
-
+#Initialises BookItem Object. This has inherited attributes from Book Object
 class BookItem(db.Model):
     __tablename__ = "bookitem"
     book_item_id = db.Column(db.Integer, primary_key=True)
@@ -112,7 +119,7 @@ class BookItem(db.Model):
     def __repr__(self):
         return '<BookItem {}>'.format(self.book_item_id)
 
-
+#Initiliases the Notification template object
 class NotificationTemplate(db.Model):
     template_id = db.Column(db.Integer, primary_key=True)
     template_name = db.Column(db.String(60))

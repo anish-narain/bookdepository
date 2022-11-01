@@ -21,6 +21,7 @@
                 <tbody>
                     {% for rows in transactions %}
                     <tr id="{{rows.transaction_id}}">
+                    <!--Links to the relevant rows in the SQL database-->
                     <td>{{ rows.transaction_id }}</td>
                     <td>{{ rows.title }}</td>
                     <td>{{ rows.transaction_type }}</td>
@@ -34,6 +35,7 @@
             </table>
         
     <br>
+    <!--Outputs award points-->
       <p><strong>Your have earned {{ totalpoints }} points so far</strong></p>
       <p><strong>Your profile details are:</strong></p>
  

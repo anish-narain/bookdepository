@@ -7,6 +7,7 @@
 {% block navbar %}
     <nav class="navbar navbar-default">
         <div class="container">
+        <!--Defines the header of the web app-->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
@@ -17,15 +18,18 @@
                 <a class="navbar-brand" href="{{ url_for('index') }}">Book Bank</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <!--Defines header for user that has not logged in yet-->
                 <ul class="nav navbar-nav">
                     {% if current_user.is_anonymous %}
-                    {% else %}
+                    {% else %} 
+                    <!--Defines header for a normal user that has logged in-->
                     <li><a href="{{ url_for('results') }}">Your Profile</a></li>
                     <li><a href="{{ url_for('search') }}">Search</a></li>
                     <li><a href="{{ url_for('donate') }}">Donate</a></li>
                     <li><a href="{{ url_for('wish') }}">Wish</a></li>
                         {% if current_user.is_user %}
                         {% else %}
+                        <!--Defines header for an admin-->
                         <li><a href="{{ url_for('manage') }}">Manage</a></li>
                         {% endif %}
                     {% endif %}

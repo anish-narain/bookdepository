@@ -21,7 +21,7 @@ def get_locations():
 def get_conditions():
     return BookCondition.query.all()
     
-
+#Web form for log-in page
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -36,13 +36,17 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
+    #Validating username
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
+        #Error message if username already exisits
         if user is not None:
             raise ValidationError('Please use a different username.')
 
+    #Validating form of email address
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
+        #Error message if not in the correct form
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
@@ -102,18 +106,23 @@ class ManageDetailsForm(FlaskForm):
     chosenoption = RadioField('Options', choices=[('1', '1'), ('2', '2'),('3', '3'), ('4', '4'),('5', '5'), ('6', '6'),('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'),('11', '11'), ('12', '12'),('13', '13'), ('14', '14'),('15', '15'), ('16', '16'), ('17', '17'), ('18', '18'),('19', '19'), ('20', '20'),('21', '21'), ('22', '22'),('23', '23'), ('24', '24'), ('25', '25')], default=1, coerce=int)
     condition = QuerySelectField('Condition', query_factory=get_conditions,get_label='condition')
     submit = SubmitField('Complete Transaction')    
-    
+
+#Form for user profile update
 class ManageUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Update Your Profile')
 
+#Validates new username
     def validate_username(self, username):
         user = User.query.filter(username == username.data).filter(id != current_user.id).first()
+        #Error message
         if user is not None:
             raise ValidationError('Please use a different username.')
 
+#Validates new password
     def validate_email(self, email):
         user = User.query.filter(email == email.data).filter(id != current_user.id).first()
+        #Error message
         if user is not None:
             raise ValidationError('Please use a different email address.')

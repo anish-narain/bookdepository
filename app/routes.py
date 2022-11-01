@@ -301,7 +301,7 @@ def donatedetails():
         db.session.add(transaction)
         db.session.commit()
 
-        # send_donation_email
+        # Actions to take once donation is confirmed by user
         user = User.query.filter_by(id=current_user.id).first()
         branch = Branch.query.filter_by(branch_id=selected_location).first()
         send_donation_email(user, send_book_title, transaction, branch)
