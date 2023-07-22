@@ -1,9 +1,6 @@
 Welcome to my NEA project: Book Bank
 ===========================================
 
-The design document is available here [link](https://www.google.com)
-
-
 **How to setup on local machine (Mac)**
 
 A. Pre-requisites
